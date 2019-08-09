@@ -923,3 +923,30 @@ table which is an ordinal factor:
 +}
 + return(tab)
 +}
+
+
+Exercise 4.3 (Ventilation on an Ordered Factor)
+1. The function is almost or exactly the same as that seen in the answer for
+Exercise 2.7. To the output we add (return) and a few veri_cations:
+> ventilation.y <- function(Xfac,p=0.05) {
++ if (!is.ordered(Xfac)) stop("Xfac must be ordered \n")
++ categories <- levels(Xfac)
++ if (length(categories)<=1) stop("not enough levels \n")
++ tabl <- table(Xfac)
++ selecti <- (tabl/sum(tabl))<p
++ if (!any(selecti)) return(Xfac) else {
++ numero <- which(selecti)
++ while(any((tabl/sum(tabl))<p)) {
+.. paste here the inside of the while loop from Exercise 2.7
++ }
++ }
++ return(Xfac)
++ }
+2. We apply the function from the previous question to each column of the
+table which is an ordinal factor:
+> ventil.y.tab <- function (tab, threshold=0.05) {
++ for (i in 1:ncol(tab)) {
++ if (is.ordered(tab[,i])) tab[,i]<-ventilation.y(tab[,i],threshold)
++ }
++ return(tab)
++ }
