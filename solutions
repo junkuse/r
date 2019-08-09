@@ -1,0 +1,925 @@
+A.5 Answers to the Exercises
+A.5.1 Exercises: Chapter 1
+Exercise 1.1 (Creating Vectors)
+1. The three vectors are created using the rep function with the arguments
+each and times:
+> vec1 <- rep(1:5,3)
+> vec1
+[1] 1 2 3 4 5 1 2 3 4 5 1 2 3 4 5
+Appendix 271
+> vec2 <- rep(1:5,each=3)
+> vec2
+[1] 1 1 1 2 2 2 3 3 3 4 4 4 5 5 5
+> vec3 <- rep(1:4,times=(2:5))
+> vec3
+[1] 1 1 2 2 2 3 3 3 3 4 4 4 4 4
+2. The paste function concatenates vectors:
+> vec4 <- paste("A",0:10,")",sep="")
+> vec4
+[1] "A0)" "A1)" "A2)" "A3)" "A4)" "A5)"
+[7] "A6)" "A7)" "A8)" "A9)" "A10)"
+3. The position of the letter q is _rst calculated. Then the vector of letters
+and the vector of indices are pasted:
+> pos.q <- which(letters=="q")
+> vec5 <- paste(letters[1:pos.q],1:pos.q,sep="")
+> vec5
+[1] "a1" "b2" "c3" "d4" "e5" "f6" "g7" "h8" "i9"
+[10] "j10" "k11" "l12" "m13" "n14" "o15" "p16" "q17"
+Exercise 1.2 (Working with NA)
+1. The vector is created, and the mean and variance are computed:
+> set.seed(007)
+> vec1 <- runif(100,0,7)
+> mean(vec1)
+[1] 3.564676
+> var(vec1)
+[1] 3.94103
+2. Missing values are allocated at random:
+> vec2 <- vec1
+> ind <- sample(1:100,10)
+> vec2[ind] <- NA
+> indNA <- which(is.na(vec2))
+[1] 4 19 33 38 40 49 62 71 90 99
+3. It is necessary to use the argument na.rm=TRUE to compute the mean and
+variance.
+> mean(vec2)
+[1] NA
+272 R for Statistics
+> mean(vec2,na.rm=T)
+[1] 3.539239
+> var(vec2)
+[1] NA
+> var(vec2,na.rm=T)
+[1] 3.879225
+4. We delete the missing values and _nd again the mean and variance previously
+calculated with the argument na.rm=TRUE:
+> vec3 <- vec2[-indNA]
+> mean(vec3)
+[1] 3.539239
+> var(vec3)
+[1] 3.879225
+5. If the missing values are replaced by the mean of the variable, then the
+mean is the same as before but the variance is under-estimated:
+> vec4 <- vec2
+> vec4[indNA] <- mean(vec3)
+> mean(vec4)
+[1] 3.539239
+> var(vec4)
+[1] 3.487384
+6. The missing values are replaced by values drawn from a normal distribution
+with mean and standard deviation of the variable:
+> vec5 <- vec2
+> vec5[indNA] <- rnorm(length(indNA),mean(vec3),sd(vec3))
+> mean(vec5)
+[1] 3.545158
+> var(vec5)
+[1] 3.665774
+7. The missing values are replaced by values drawn from a Uniform distribution
+from the minimum to the maximum of the observed values:
+> vec6 <- vec2
+> vec6[indNA] <- runif(length(indNA),min(vec3),max(vec3))
+> mean(vec6)
+[1] 3.726103
+> var(vec6)
+[1] 3.863905
+Appendix 273
+8. The missing values are replaced by values randomly drawn from the observed
+values:
+> vec7 <- vec2
+> vec7[indNA] <- sample(vec3,10)
+> mean(vec7)
+[1] 3.477317
+> var(vec7)
+[1] 3.89452
+Exercise 1.3 (Creating, Manipulating and Inverting a Matrix)
+1. The matrix mat is created prior to attributing the row and column names:
+> mat <- matrix(c(1,0,3,4,5,5,0,4,5,6,3,4,0,1,3,2),ncol=4)
+> rownames(mat) <- paste("row",1:4,sep="-")
+> colnames(mat) <- paste("column",1:4)
+2. The diagonal elements of the matrix mat are obtained as follows:
+> vec <- diag(mat)
+> vec
+[1] 1 5 3 2
+3. The matrix containing the _rst 2 rows of mat is obtained as follows:
+> mat1 <- mat[c(1,2),]
+> mat1
+column 1 column 2 column 3 column 4
+row-1 1 5 5 0
+row-2 0 5 6 1
+4. The matrix containing the last 2 columns of mat is obtained as follows:
+> mat2 <- mat[,(ncol(mat)-1):ncol(mat)]
+> mat2
+column 3 column 4
+row-1 5 0
+row-2 6 1
+row-3 3 3
+row-4 4 2
+5. To calculate the determinant and invert the matrix, simply use the functions
+det and solve:
+> det(mat)
+[1] 60
+274 R for Statistics
+> solve(mat)
+row-1 row-2 row-3 row-4
+column 1 0.5 -0.5 0.1666667 -5.551115e-17
+column 2 -0.6 0.4 -0.4666667 5.000000e-01
+column 3 0.7 -0.3 0.4333333 -5.000000e-01
+column 4 -1.2 0.8 -0.2666667 5.000000e-01
+Exercise 1.4 (Selecting and Sorting in a Data-Frame)
+1. The iris data is loaded and a new dataset is created by selecting only the
+rows carrying the value "versicolor" for the Species variable:
+> data(iris)
+> iris2 <- iris[iris[,"Species"]=="versicolor", ]
+2. The dataset is sorted according to the _rst variable using the order function:
+> iris2[order(iris2[,1],decreasing=TRUE),]
+Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+51 7.0 3.2 4.7 1.4 versicolor
+53 6.9 3.1 4.9 1.5 versicolor
+77 6.8 2.8 4.8 1.4 versicolor
+...
+61 5.0 2.0 3.5 1.0 versicolor
+94 5.0 2.3 3.3 1.0 versicolor
+58 4.9 2.4 3.3 1.0 versicolor
+Exercise 1.5 (Using the apply Function)
+1. To calculate the benchmark statistics, simply use the summary function:
+> library(lattice) # load the package
+> data(ethanol)
+> summary(ethanol)
+NOx C E
+Min. :0.370 Min. : 7.500 Min. :0.5350
+1st Qu.:0.953 1st Qu.: 8.625 1st Qu.:0.7618
+Median :1.754 Median :12.000 Median :0.9320
+Mean :1.957 Mean :12.034 Mean :0.9265
+3rd Qu.:3.003 3rd Qu.:15.000 3rd Qu.:1.1098
+Max. :4.028 Max. :18.000 Max. :1.2320
+2. To calculate the quartiles, we can use the apply function:
+> apply(X=ethanol,MARGIN=2,FUN=quantile)
+NOx C E
+0% 0.3700 7.500 0.53500
+25% 0.9530 8.625 0.76175
+50% 1.7545 12.000 0.93200
+75% 3.0030 15.000 1.10975
+100% 4.0280 18.000 1.23200
+Appendix 275
+3. The instruction for the previous question by default yields the quartiles.
+Indeed, since we have not speci_ed the argument probs for the quantile function,
+the argument used by default is: probs=seq(0,0.25,0.5,0.75,1) (see
+the help section for the quantile function). To obtain deciles, we have to specify
+probs=seq(0,1,by=0.1) as the argument. The help section for the apply
+function indicates the optional arguments via ...: optional arguments
+to 'FUN'. It is therefore possible to \pass" probs=seq(0,1,by=0.1) as an
+argument to the FUN=quantile function:
+> apply(ethanol,2,quantile,probs=seq(0,1,by=0.1))
+NOx C E
+0% 0.3700 7.5 0.5350
+10% 0.6000 7.5 0.6496
+20% 0.8030 7.5 0.7206
+30% 1.0138 9.0 0.7977
+40% 1.4146 9.0 0.8636
+50% 1.7545 12.0 0.9320
+60% 2.0994 12.6 1.0104
+70% 2.7232 15.0 1.0709
+80% 3.3326 15.0 1.1404
+90% 3.6329 18.0 1.1920
+100% 4.0280 18.0 1.2320
+Exercise 1.6 (Selection in a Matrix with the apply Function)
+1. The matrix containing the columns of mat having all values smaller than
+6 is obtained as follows:
+> mat <- matrix(c(1,0,3,4,5,5,0,4,5,6,3,4,0,1,3,2),ncol=4)
+> mat3 <- mat[,apply((mat<6),2,all)]
+> mat3
+[,1] [,2] [,3]
+[1,] 1 5 0
+[2,] 0 5 1
+[3,] 3 0 3
+[4,] 4 4 2
+2. Because there is only one row which do not contain 0, we have to use
+drop=FALSE such that the output is a matrix and not a vector:
+> mat4 <- mat[apply((mat>0),1,all),,drop=FALSE]
+> mat4
+[,1] [,2] [,3] [,4]
+[1,] 4 4 4 2
+Exercise 1.7 (Using the lapply Function)
+1. The MASS package and the dataset Aids2 are loaded:
+276 R for Statistics
+> library(MASS) # load the package
+> data(Aids2)
+> summary(Aids2)
+state sex diag death status
+NSW :1780 F: 89 Min. : 8302 Min. : 8469 A:1082
+Other: 249 M:2754 1st Qu.:10163 1st Qu.:10672 D:1761
+QLD : 226 Median :10665 Median :11235
+VIC : 588 Mean :10584 Mean :10990
+3rd Qu.:11103 3rd Qu.:11504
+Max. :11503 Max. :11504
+T.categ age
+hs :2465 Min. : 0.00
+blood : 94 1st Qu.:30.00
+hsid : 72 Median :37.00
+other : 70 Mean :37.41
+id : 48 3rd Qu.:43.00
+haem : 46 Max. :82.00
+(Other): 48
+2. The function is.numeric returns a boolean: TRUE when the object on which
+it is applied is numeric. We have to apply this function to each column of the
+data-frame Aids2 and take the negation (operator !). As the data-frame is a
+list, applying a function to each column is (usually) equivalent to applying a
+function to each component of the list; this is the scope of the lapply function:
+> ind <- !unlist(lapply(Aids2,is.numeric))
+3. We just have to select the variables of the data-frame using ind:
+> Aids2.qual <- Aids2[,ind]
+4. We use the levels function on each element of the data-frame Aids2.qual:
+> lapply(Aids2.qual,levels)
+Exercise 1.8 (Levels of the Qualitative Variables in a Subset)
+1. The package MASS and the dataset Aids2 are loaded:
+> library(MASS) # load the package
+> data(Aids2)
+2. The selection is done as follows:
+> res <- Aids2[(Aids2[,"sex"]=="M")&(Aids2[,"state"]!="Other"),]
+Another method consists in using the subset function.
+Appendix 277
+3. The summary indicates that the levels are still the same, M and F, but no
+individuals take the category F.
+> summary(res)
+state sex diag death status
+NSW :1726 F: 0 Min. : 8302 Min. : 8469 A: 947
+Other: 0 M:2518 1st Qu.:10155 1st Qu.:10671 D:1571
+QLD : 217 Median :10662 Median :11220
+VIC : 575 Mean :10583 Mean :10987
+3rd Qu.:11104 3rd Qu.:11504
+Max. :11503 Max. :11504
+T.categ age
+hs :2260 Min. : 0.00
+hsid : 68 1st Qu.:30.00
+other : 55 Median :37.00
+blood : 54 Mean :37.36
+haem : 40 3rd Qu.:43.00
+id : 21 Max. :82.00
+(Other): 20
+4. The attributes of sex are:
+> attributes(res[,"sex"])
+$levels
+[1] "F" "M"
+$class
+[1] "factor"
+5. We transform the sex variable into a character object and print the attributes
+of the resulting object:
+> sexc <- as.character(res[,"sex"])
+> attributes(sexc)
+NULL
+6. Transform the sexc into a factor:
+> sexf <- as.factor(sexc)
+> attributes(sexf)
+$levels
+[1] "M"
+$class
+[1] "factor"
+278 R for Statistics
+7. We select the indices of the non-numeric variables:
+> ind <- !unlist(lapply(res,is.numeric))
+> ind
+state sex diag death status T.categ age
+TRUE TRUE FALSE FALSE TRUE TRUE FALSE
+8. We transform the selected variables into character:
+> res[,ind] <- lapply(res[,ind],as.character)
+9. We transform the selected variables into factors:
+> res[,ind] <- lapply(res[,ind],as.factor)
+> summary(res)
+state sex diag death status
+NSW:1726 M:2518 Min. : 8302 Min. : 8469 A: 947
+QLD: 217 1st Qu.:10155 1st Qu.:10671 D:1571
+VIC: 575 Median :10662 Median :11220
+Mean :10583 Mean :10987
+3rd Qu.:11104 3rd Qu.:11504
+Max. :11503 Max. :11504
+T.categ age
+hs :2260 Min. : 0.00
+hsid : 68 1st Qu.:30.00
+other : 55 Median :37.00
+blood : 54 Mean :37.36
+haem : 40 3rd Qu.:43.00
+id : 21 Max. :82.00
+(Other): 20
+A.5.2 Exercises: Chapter 2
+Exercise 2.1 (Robust Reading of Data)
+1. The scan function allows us to read data from _le in the form of character
+vectors. Since the _rst row contains characters, this type is compulsory.
+Moreover, two types of decimal are used: "," and ".".
+> myvector <- scan("mydata.csv",what="",sep=";")
+Read 20 items
+> myvector
+[1] "surname" "height" "weight" "feet_size" "sex"
+[6] "tony" "184" "80" "9.5" "M"
+[11] "james" "175,5" "78" "8.5" "M"
+[16] "john" "158" "72" "8" "M"
+2. Replace commas by dots:
+Appendix 279
+> myvector <- gsub(",",".",myvector)
+3. Raw data matrix (with row and column names):
+> mymatrix <- matrix(myvector,nrow=4,ncol=5,byrow=TRUE)
+> mymatrix
+[,1] [,2] [,3] [,4] [,5]
+[1,] "surname" "height" "weight" "feet_size" "sex"
+[2,] "tony" "184" "80" "9.5" "M"
+[3,] "james" "175.5" "78" "8.5" "M"
+[4,] "john" "158" "72" "8" "M"
+4. Retrieval of column and row names:
+> namecol <- mymatrix[1,-1]
+> namecol
+[1] "height" "weight" "feet_size" "sex"
+> namerow <- mymatrix[-1,1]
+> namerow
+[1] "tony" "james" "john"
+> mymatrix <- mymatrix[-1,-1]
+5. Data-frame of data with the row and column names:
+> mydata <- as.data.frame(mymatrix)
+> colnames(mydata) <- namecol
+> rownames(mydata) <- namerow
+> summary(mydata)
+height weight feet_size sex
+158 :1 72:1 42:1 M:3
+175.5:1 78:1 43:1
+184 :1 80:1 44:1
+The _rst three variables are factors and must therefore be converted to numerics
+(Section 2.3.1, p. 35):
+> for (i in c(1,2,3))f
++ mydata[,i] <- as.numeric(as.character(mydata[,i]))
++}
+> summary(mydata)
+height weight feet_size sex
+Min. :158.0 Min. :72.00 Min. :42.0 M:3
+1st Qu.:166.8 1st Qu.:75.00 1st Qu.:42.5
+Median :175.5 Median :78.00 Median :43.0
+Mean :172.5 Mean :76.67 Mean :43.0
+3rd Qu.:179.8 3rd Qu.:79.00 3rd Qu.:43.5
+Max. :184.0 Max. :80.00 Max. :44.0
+280 R for Statistics
+Exercise 2.2 (Reading Data from File)
+> test1 <- read.table("test1.csv",sep=",",header=TRUE)
+> summary(test1)
+CLONE B IN HT19
+1-105 :9 Min. :1 Min. :1.000 Min. : 3.000
+1-41 :9 1st Qu.:1 1st Qu.:2.750 1st Qu.: 7.968
+18-428:9 Median :1 Median :4.500 Median : 9.055
+18-429:5 Mean :1 Mean :4.688 Mean : 8.556
+3rd Qu.:1 3rd Qu.:7.000 3rd Qu.: 9.925
+Max. :1 Max. :9.000 Max. :11.300
+C19 HT29
+Min. : 5.00 Min. : 4.50
+1st Qu.:18.75 1st Qu.:11.38
+Median :21.50 Median :12.75
+Mean :21.75 Mean :11.91
+3rd Qu.:26.00 3rd Qu.:13.75
+Max. :34.00 Max. :15.25
+> test1prn <- read.table("test1.prn",header=TRUE)
+> summary(test1prn)
+CLONE B IN HT19
+1-105 :9 Min. :1 Min. :1.000 Min. : 3.000
+1-41 :9 1st Qu.:1 1st Qu.:3.000 1st Qu.: 8.150
+18-428:9 Median :1 Median :5.000 Median : 9.110
+18-429:6 Mean :1 Mean :4.727 Mean : 8.595
+3rd Qu.:1 3rd Qu.:7.000 3rd Qu.: 9.900
+Max. :1 Max. :9.000 Max. :11.300
+C19 HT29
+Min. : 5.00 Min. : 4.50
+1st Qu.:19.00 1st Qu.:11.50
+Median :22.00 Median :12.75
+Mean :21.85 Mean :11.97
+3rd Qu.:26.00 3rd Qu.:13.75
+Max. :34.00 Max. :15.25
+> test2 <- read.table("test2.csv", sep=";", header=TRUE,
+na.strings="")
+> str(test2)
+'data.frame': 999 obs. of 6 variables:
+$ CLONE: Factor w/ 87 levels "","1-105","1-41",..: 2 2 2 2 2 2 2 2 2 3 ...
+$ B : int 1 1 1 1 1 1 1 1 1 1 ...
+$ IN : int 1 2 3 4 5 6 7 8 9 1 ...
+$ HT19 : num 8.95 9.11 9.85 10.82 9.4 ...
+$ C19 : int 21 21 26 29 22 19 20 20 24 33 ...
+$ HT29 : num 12.5 13 14.2 15 13 ...
+> test3 <- read.table("test3.csv", sep=";", header=TRUE,
+na.strings=".")
+Appendix 281
+> summary(test3)
+CLONE B IN HT19
+1-105 : 18 Min. :1.000 Min. :1 Min. : 0.89
+1-41 : 18 1st Qu.:1.000 1st Qu.:3 1st Qu.: 7.35
+18-428 : 18 Median :1.000 Median :5 Median : 9.32
+18-429 : 18 Mean :1.234 Mean :5 Mean : 10.47
+18-430 : 18 3rd Qu.:1.000 3rd Qu.:7 3rd Qu.: 10.50
+18-438 : 18 Max. :2.000 Max. :9 Max. :1142.00
+(Other):891 NA's : 15.00
+C19 HT29
+Min. : 3.00 Min. : 1.96
+1st Qu.:17.00 1st Qu.:10.75
+Median :23.00 Median :12.88
+Mean :22.08 Mean :12.20
+3rd Qu.:28.00 3rd Qu.:14.00
+Max. :37.00 Max. :17.50
+NA's :20.00 NA's :15.00
+Exercise 2.3 (Reading Data from File with Date Format)
+1. Read the dataset, skipping the _rst two lines:
+> ski <- read.table("test4.csv", sep="|", skip=2, header=TRUE,
+row.names=1)
+> summary(ski)
+age gender first.time.skiing
+Min. :24.00 Min. :0.00 1980-05-01:1
+1st Qu.:28.00 1st Qu.:0.00 1982-01-31:1
+Median :32.00 Median :0.00 1992-01-15:1
+Mean :30.38 Mean :0.25 2003-03-16:1
+3rd Qu.:33.00 3rd Qu.:0.25 2005-02-26:1
+Max. :33.00 Max. :1.00 2006-03-04:1
+(Other) :2
+2. Use the format Date for the last variable. The format POSIXct could be
+interesting if the time was speci_ed.
+> ski2<-read.table("test4.csv",sep="|",skip=2,header=TRUE,
+row.names=1,colClasses=c("character","numeric",
+"factor","Date"))
+> summary(ski2)
+age gender first.time.skiing
+Min. :24.00 0:6 Min. :1980-05-01
+1st Qu.:28.00 1:2 1st Qu.:1989-07-20
+Median :32.00 Median :2004-03-06
+Mean :30.38 Mean :1998-06-01
+3rd Qu.:33.00 3rd Qu.:2006-12-02
+Max. :33.00 Max. :2009-03-06
+282 R for Statistics
+Exercise 2.4 (Reading Data from File and Merging)
+1. Read the datasets:
+> state1 <- read.table("state1.csv",sep=";",header=TRUE)
+> state2 <- read.table("state2.csv",sep=",",header=TRUE)
+> state3 <- read.table("state3.csv",row.names=1,header=TRUE)
+2. Merge by key (common variable region for state1 and state3, then common
+variable state for state2 and the previous table):
+> state13 <- merge(state1,state3,by="region")
+> state123 <- merge(state2,state13,by="state")
+Exercise 2.5 (Merging and Selection)
+1. Open the two _les in Excel (or OpenO_ce), save them in text format .csv
+(with OpenO_ce, choose _eld separator \;" ). Then read these two _les using
+> fusion1 <- read.table("fusion1.csv",sep=";",header=TRUE)
+> summary(fusion1)
+yhat1 yhat3 yhat2
+Min. :-0.46520 Min. :-0.6267 Min. :-2.1563
+1st Qu.:-0.37217 1st Qu.: 0.2906 1st Qu.:-1.1357
+Median :-0.26458 Median : 1.1447 Median :-0.8284
+Mean :-0.26641 Mean : 0.9956 Mean :-0.9200
+3rd Qu.:-0.17349 3rd Qu.: 1.5200 3rd Qu.:-0.6037
+Max. :-0.03419 Max. : 2.8496 Max. :-0.2903
+yhat4 yhat5
+Min. :0.5374 Min. :0.07706
+1st Qu.:0.9553 1st Qu.:0.17804
+Median :1.4079 Median :0.25966
+Mean :1.3332 Mean :0.27391
+3rd Qu.:1.6578 3rd Qu.:0.37683
+Max. :2.1196 Max. :0.48926
+> fusion2 <- read.table("fusion2.csv",sep=";",header=TRUE)
+> summary(fusion2)
+Rhamnos Fucos Arabinos
+Min. :-0.5348 Min. :-2.3026 Min. :-0.77403
+1st Qu.:-0.3513 1st Qu.:-2.0090 1st Qu.:-0.24294
+Median :-0.1010 Median :-1.4524 Median :-0.03542
+Mean : 0.0925 Mean :-1.4028 Mean : 0.15860
+3rd Qu.: 0.5184 3rd Qu.:-0.7409 3rd Qu.: 0.50681
+Max. : 1.3447 Max. :-0.2829 Max. : 1.39122
+Xylos Mannos
+Min. :0.4243 Min. :0.02623
+1st Qu.:0.9477 1st Qu.:0.15794
+Median :1.1553 Median :0.49551
+Mean :1.1117 Mean :0.51873
+3rd Qu.:1.3142 3rd Qu.:0.81277
+Max. :1.7882 Max. :1.14627
+Appendix 283
+2. Retain two columns for each table and create the data-frame:
+> fusion1 <- fusion1[,c("yhat1","yhat3")]
+> fusion2 <- fusion2[,c("Rhamnos","Arabinos")]
+> data <- cbind(fusion1,fusion2)
+3. Create two variables and add these to the data-frame data:
+> yres1 <- data[,"yhat1"]-data[,"Rhamnos"]
+> yres2 <- data[,"yhat3"]-data[,"Arabinos"]
+> data <- cbind.data.frame(data,yres1,yres2)
+> names(data)
+[1] "yhat1" "yhat3" "Rhamnos" "Arabinos" "yres1" "yres2"
+Exercise 2.6 (Ventilation)
+1. Calculate the frequencies:
+> tabl <- table(Xfac)
+> tabl/sum(tabl)
+Xfac
+A B C D
+0.60 0.20 0.17 0.03
+2. Display the categories with a sample size of less than 5%:
+> lev <- levels(Xfac)
+> select <- (tabl/sum(tabl))<0.05
+> lev[select]
+[1] "D"
+3. Frequencies of the categories without category D:
+> mod.select <- lev[!select]
+> prov <- factor(Xfac[(Xfac%in%mod.select)],levels=mod.select)
+> prov <- table(prov)
+> freq <- prov/sum(prov)
+> freq
+prov
+A B C
+0.6185567 0.2061856 0.1752577
+4. Select individuals carrying the category D, random draw (ventilation) of
+their new category. The factor Xfac has categories which are described in
+levels but which are no longer represented (i.e. the categories which have
+been ventilated, here D). The last row updates the list of factor levels.
+284 R for Statistics
+> for (j in lev[select]) {
++ ## sampling in the levels at random with replacement
++ if (length(mod.select)==1) stop("only one category\n") else
++ Xfac[Xfac==j] <- sample(mod.select,sum(Xfac==j),
+replace=T, prob = freq)
++}
+> Xfacvent <- factor(as.character(Xfac))
+> Xfacvent
+[1] A A A A A A A A A A A A A A A A A A A A A A A A A A A
+[28] A A A A A A A A A A A A A A A A A A A A A A A A A A A
+[55] A A A A A A B B B B B B B B B B B B B B B B B B B B C
+[82] C C C C C C C C C C C C C C C C B A C
+Exercise 2.7 (Ventilation by Ordinal Factors)
+1. Calculate the frequencies:
+> Xfac <- ordered(c(rep("0-10",1),rep("11-20",3),rep("21-30",5),
+rep("31-40",20),rep("41-50",2),rep("51-60",2),
+rep("61-70",1),rep("71-80",31),rep("+ de 80",20)),
+levels=c("0-10","11-20","21-30","31-40","41-50","51-60",
+"61-70","71-80","+ 80"))
+> tabl <- table(Xfac)
+> tabl/sum(tabl)
+Xfac
+0-10 11-20 21-30 31-40 41-50
+0.01176471 0.03529412 0.05882353 0.23529412 0.02352941
+51-60 61-70 71-80 + 80
+0.02352941 0.01176471 0.36470588 0.23529412
+2. Display the categories to be \ventilated":
+> p <- 0.05
+> select <- (tabl/sum(tabl))<p
+> lev <- levels(Xfac)
+> lev[select]
+[1] "0-10" "11-20" "41-50" "51-60" "61-70"
+3. As long as there is a category with a sample size of less than 5%, it must
+be ventilated (and deleted from the list of levels): this is the object of the
+loop while.
+> while(any((tabl/sum(tabl))<p)) {
++ ## take the first category whose numbers are too low
++ j <- which(((tabl/sum(tabl))<p))[1]
++ K <- length(lev) # effective of the categories updated
++ ## merge the next or the previous category for the last one
+Appendix 285
++ if (j<K) {
++ if ((j>1)&(j<K-1)) {
++ levels(Xfac) <- c(lev[1:(j-1)],paste(lev[j],
++ lev[j+1],sep="."),paste(lev[j],lev[j+1],sep="."),
++ lev[j+2:K]) g
++ if (j==1) {
++ levels(Xfac) <- c(paste(lev[j],lev[j+1],sep="."),
++ paste(lev[j],lev[j+1],sep="."),lev[j+2:K]) g
++ if (j==(K-1)) {
++ levels(Xfac) <- c(lev[1:(j-1)],paste(lev[j],
++ lev[j+1],sep="."),paste(lev[j],lev[j+1],sep=".")) g
++} else f
++ levels(Xfac) <- c(lev[1:(j-2)],paste(lev[j-1],
++ lev[j],sep="."),paste(lev[j-1],lev[j],sep="."))
++}
++ tabl <- table(Xfac) ## table updated and ...
++ lev <- levels(Xfac) ## ... categories updated
++}
+> tabl
+Xfac
+0-10.11-20.21-30 31-40 41-50.51-60.61-70
+9 20 5
+71-80 + 80
+31 20
+Exercise 2.8 (Cross-Tabulation ! Data Table)
+1. A contingency table can simply be constructed by creating the following
+matrix:
+> tabl <- matrix(c(2,1,3,0,0,4),2,3)
+> colnames(tabl) <- c("Ang","Mer","Tex")
+> rownames(tabl) <- c("Low","High")
+2. The tabl matrix is not of table type. There are missing attributes. Also,
+the opposite simple operation (using as.data.frame) is not directly possible.
+One solution is to add attributes to this matrix. Instead, more simply, we
+construct this table by hand:
+> tabmat <- matrix("",length(tabl),3)
+> tabmat[,3] <- as.vector(tabl)
+> tabmat[,2] <- rep(rownames(tabl),ncol(tabl))
+> tabmat[,1] <- rep(colnames(tabl),each=nrow(tabl))
+3. Implement a data-frame tabframe. Column 3, which is converted to a
+factor using the data.frame function, must be converted into a numeric (Section
+2.3.1, p. 35). Then, calculate the total sample size and the number of
+factors:
+286 R for Statistics
+> tabframe <- data.frame(tabmat)
+> tabframe[,3] <- as.numeric(as.character(tabframe[,3]))
+> tabframe
+X1 X2 X3
+1 Ang Low 2
+2 Ang High 1
+3 Mer Low 3
+4 Mer High 0
+5 Tex Low 0
+6 Tex High 4
+> n <- sum(tabframe[,3])
+> nbfac <- ncol(tabframe)-1
+4. Create the tab matrix and the counter:
+> tabcomplete <- matrix("",n,nbfac)
+> iter <- 1
+5. On the _rst two rows, we operate the loop on all the rows of the tabframe
+table and control it using the sample size (not null). In the new table, we
+then repeat the allocation of categories, for as many times as required by the
+sample size (and therefore not the last column of tabmat which contains these
+sample sizes). The row index for this table is managed by the iter counter.
+> for (i in 1:nrow(tabframe)) {
++ if (tabframe[i,3]>0) {
++ for (j in 1:tabframe[i,3]) {
++ tabcomplete[iter,] <- tabmat[i,-ncol(tabframe)]
++ iter <- iter+1
++}
++}
++}
+> data.frame(tabcomplete)
+X1 X2
+1 Ang Low
+2 Ang Low
+3 Ang High
+4 Mer Low
+5 Mer Low
+6 Mer Low
+7 Tex High
+8 Tex High
+9 Tex High
+10 Tex High
+The tabmat matrix is used when attributing the rows of tabcomplete. It is
+Appendix 287
+not possible to allocate to rows of the data-frame directly. Indeed, a dataframe
+is a list, as is a row of a data-frame, and it is impossible to allocate a
+list within a row of a matrix which is itself a vector.
+A.5.3 Exercises: Chapter 3
+Exercise 3.1 (Draw a function)
+1. De_ne a variation grid x and then draw the sine curve:
+> x <- seq(0,2*pi,length=1000)
+> plot(sin(x)~x,type="l")
+2. To add the title, we use the title function (or we could also directly use
+the main argument within the plot function):
+> title("Plot of the sine function")
+0 1 2 3 4 5 6
+−1.0 −0.5 0.0 0.5 1.0
+x
+sin(x)
+Plot of the sine function
+Figure 3.6
+Plot of the sine function.
+Exercise 3.2 (Comparison of Distributions)
+1. To illustrate a normal distribution, simply draw the density using the
+dnorm function. We can then improve the graph by drawing the abscissa
+axis and then a segment between 0 and the maximum of the normal distribution.
+> plot(dnorm,-4,4)
+> abline(h=0)
+> segments(0,0,0,dnorm(0),lty=2)
+2. To draw new curves we use the curve function with the argument add=TRUE.
+To di_erenciate between curves, use a di_erent colour for each distribution.
+288 R for Statistics
+> curve(dt(x,5),add=TRUE,col=2)
+> curve(dt(x,30),add=TRUE,col=3)
+3. Simply use the legend function and position it at the top left:
+> legend("topleft",legend=c("normal","Student(5)","Student(30)"),
+col=1:3,lty=1)
+Exercise 3.3 (Plotting Points)
+1. The scatterplot is imported and constructed immediately:
+> ozone <- read.table("ozone.txt",header=T)
+> plot(maxO3~T12,data=ozone)
+2. To connect the points, simply use type="l"; this graph is illegible as we
+must _rst sort the data in ascending order on the abscissa axis.
+3. The order function makes it possible:
+> sorted <- order(ozone[,"T12"])
+> plot(maxO3~T12,data=ozone[sorted,],type="b")
+Exercise 3.4 (Law of Large Numbers)
+1. Create a vector X of length 1000:
+> set.seed(123)
+> X <- rbinom(1000, size=1, prob=0.6)
+2. The cumsum function is used to construct a vector of cumulated sums:
+> Sl <- cumsum(X)
+> Ml <- Sl/(1:1000)
+> plot(Ml, type="l")
+> abline(h=0.6, col=2)
+The resulting graph illustrates the law of large numbers.
+Exercise 3.5 (Central Limit Theorem)
+1. SN follows a binomial distribution with parameters N and p, with mean
+N _ p and standard deviation
+p
+N _ p _ (1 􀀀 p).
+2. Set the random seed generator and then simulate a vector of 1000 occurrences
+of a binomial distribution with the parameters N and p:
+> set.seed(123)
+> p <- 0.5
+> N <- 10
+Appendix 289
+> U10 <- (rbinom(1000, size = N, p=p) - N*p) /sqrt(N*p*(1-p))
+> N <- 30
+> U30 <- (rbinom(1000, size = N, p=p) - N*p) /sqrt(N*p*(1-p))
+> N <- 1000
+> U1000 <- (rbinom(1000, size = N, p=p) - N*p)/sqrt(N*p*(1-p))
+3. Before drawing the curve for the standard normal distribution, create a
+grid for x varying between 􀀀4 and 4. Then, divide the graph window into one
+row and three columns, plot a histogram and overlay the curve for the normal
+distribution.
+> gridx <- seq(-4, 4, by = 0.01)
+> par(mfrow=c(1,3))
+> hist(U10, xlim=c(-4,4), ylim=c(0,0.6), prob=T)
+> lines(gridx, dnorm(gridx), col=4)
+> hist(U30, xlim=c(-4,4), ylim=c(0,0.6), prob=T)
+> lines(gridx, dnorm(gridx), col=4)
+> hist(U1000, xlim=c(-4,4), ylim=c(0,0.6), prob=T)
+> lines(gridx, dnorm(gridx), col=4)
+Exercise 3.6 (Drawing Sunspots)
+1. The separator is a comma in the _le.
+> spot<-read.table("sunspots.csv",sep=",",header=T)
+> summary(spot)
+nb_spot year month day
+Min. : 0.00 Min. :1749 Min. : 1.00 Min. :1
+1st Qu.: 15.70 1st Qu.:1807 1st Qu.: 3.75 1st Qu.:1
+Median : 42.00 Median :1866 Median : 6.50 Median :1
+Mean : 51.27 Mean :1866 Mean : 6.50 Mean :1
+3rd Qu.: 74.92 3rd Qu.:1925 3rd Qu.: 9.25 3rd Qu.:1
+Max. :253.80 Max. :1983 Max. :12.00 Max. :1
+2. Create the qualitative variable thirty:
+> thirty <- oor((spot[,2]-1749+30)%/%30)
+> thirty <- factor(thirty)
+3. Check that the colours mentioned do indeed feature in the colour palette.
+> color<-c("yellow","magenta","orange","cyan","grey","red",
+"green","blue")
+> all(color%in%colors())
+[1] TRUE
+290 R for Statistics
+4. To draw the chronological series of Figure 3.34, we _rst construct the graph
+without a curve and without points (argument type="n"). This makes it
+possible to de_ne the variation ranges of x and y along with the axes' labels.
+We thus draw parts of the curve one by one, changing the colour for each
+category of thirty:
+> palette(color)
+> coordx <- seq(along=spot[,1])
+> plot(coordx,spot[,1],xlab="Time",ylab="Number of sunspots",
+type="n")
+> for (i in levels(thirty)) {
+> select <- thirty==i
+> lines(coordx[select],spot[select,1],col=i)
+> g
+Exercise 3.7 (Plotting a Density)
+1. To plot the curve for the normal distribution, _rst de_ne the variation
+interval of x:
+> x <- seq(-3.5,3.5,length=1000)
+> plot(x,dnorm(x),type="l",ylab="Density")
+2. To draw a horizontal line, use abline and the argument h:
+> abline(h=0)
+3{5 For questions 3 to 5, use the functions polygon, arrows and text. In
+order to be able to write mathematics using the text function, use expression:
+> select <- x>=qnorm(0.95)
+> absci <- c(x[select],rev(x[select]))
+> ordon <- c(rep(0,sum(select)),rev(dnorm(x[select])))
+> polygon(absci,ordon,col="blue")
+> arrows(2.7,0.2,2,dnorm(2),len=0.1)
+> text(2.7,0.2,expression(paste(alpha==5,"%")),pos=3)
+Exercise 3.8 (Multiple Graphs)
+1. To generate the graphs in Figure 3.36, we need to rede_ne the margins of
+each graph using the par function. We also use the layout function to de_ne
+the layout of the three graphs:
+> par(mar=c(2.3,2,0.5,0.3))
+> layout(matrix(c(1,1,2,3), 2, 2, byrow = TRUE))
+> plot(1:10,10:1,pch=0)
+> plot(rep(1,4),type="l")
+> plot(c(2,3,-1,0),type="b")
+Appendix 291
+2. The argument widths of layout is used to de_ne the width of each column:
+> par(mar=c(2.3,2,0.5,0.3))
+> layout(matrix(c(1,1,2,3), 2, 2, byrow = TRUE),widths=c(4,1))
+> plot(1:10,10:1,pch=0)
+> plot(rep(1,4),type="l")
+> plot(c(2,3,-1,0),type="b")
+Exercise 3.9 (Plotting Points and Rows)
+1. Read data from a _le and check reading:
+> ozone <- read.table("ozone.txt",header=T)
+> summary(ozone)
+2. Draw the graph using the xyplot function of the lattice package:
+> library(lattice)
+> xyplot(maxO3~T12,data=ozone)
+3. Draw the graph and connect the points using the argument type=c("p","l")
+(the graph looks disorganised as the data is not sorted):
+> xyplot(maxO3~T12,data=ozone,type=c("p","l"))
+4. Draw the graph using the argument type="a" which sorts the abscissa:
+> xyplot(maxO3~T12,data=ozone,type="a")
+The curve does not go through all the points, as the function smoothes the
+curve before drawing it.
+Exercise 3.10 (Panel)
+1. Read the data and construct a data-frame (denoted data) with the _rst
+three rows of maxO3 and T12:
+> ozone <- read.table("ozone.txt",header=T)
+> data <- ozone[1:3,c("T12","maxO3")]
+2. Repeat the same data six times using a loop:
+> prov <- data
+> for (i in 1:5) prov <- rbind(prov,data)
+3. Construct the ordinal factor, specifying the order of the levels using levels:
+> type <- ordered(c(rep("h",3),rep("b",3),rep("p",3),rep("l",3),
+rep("s",3),rep("S",3)),levels=c("p","l","b","h","s","S"))
+292 R for Statistics
+4. Add this ordinal factor to the prov data: here, a data-frame must be
+created as some variables are quantitative and others qualitative.
+prov <- cbind.data.frame(prov,type)
+5. Reproduce the graph in Figure 3.10 using xyplot and the appropriate panel
+function:
+> mypanel <- function(x,y,subscripts) {
++ panel.xyplot(x,y,type=unique(type[subscripts]))
++}
+> xyplot(maxO3~T12|type,data=prov,panel=mypanel,xlab="",ylab="",
+scales=list(draw=FALSE),layout=c(6,1))
+6. We leave the reader to reproduce this graph using the factor function rather
+than the ordered function in question 3.
+A.5.4 Exercises: Chapter 4
+Exercise 4.1 (Factorial)
+1. Construction of the factorial function using the prod function:
+> my.factorial <- function(n) {
++ if (n<0) stop("the integer must be positive")
++ if (n==0) return(1)
++ if (oor(n)!=n) warning(paste(n,"rounded to",oor(n)))
++ result <- prod(1:n)
++ return(result)
++}
+Here are three examples of the use of this function:
+> my.factorial(4)
+[1] 24
+> my.factorial(4.2)
+[1] 24
+Message d'avis :
+In my.factorial(4.2) : 4.2 rounded to 4
+> my.factorial(-3)
+Erreur dans my.factorial(-3) : the integer must be positive
+2. Construction of the factorial function using a loop for:
+> my.factorial <- function(n) {
++ if (n<0) stop("the integer must be positive")
++ if (n==0) return(1)
+Appendix 293
++ if (oor(n)!=n)f
++ warning(paste(n,"rounded to",oor(n)))
++ n <- oor(n)
++}
++ result <- 1
++ for (i in 1:n) result <- result*i
++ return(result)
++}
+Exercise 4.2 (Ventilation)
+1. Construct the ventilation function:
+> ventilation <- function(Xfac,p=0.05) {
++ if (!is.factor(Xfac)) stop("Xfac must be a factor \n")
++ categories <- levels(Xfac)
++ if (length(categories)<=1) stop("not enough levels \n")
++ tabl <- table(Xfac)
++ select <- (tabl/sum(tabl))<p
++ if (!any(select)) return(Xfac) else f
++ sel <- categories[!select]
++ prov <- factor(Xfac[(Xfac%in%sel)],levels=sel)
++ prov <- table(prov)
++ freq <- prov/sum(prov)
++ for (j in categories[select]) {
++ ## sampling in the levels at random with replacement
++ if (length(sel)==1)f
++ warning("1 level\n")
++ Xfac[Xfac==j]<-sel
++} else Xfac[Xfac==j]<-sample(sel,sum(Xfac==j),
++ replace=T,prob=freq)
++}
++ Xfacvent <- factor(as.character(Xfac))
++}
++ return(Xfacvent)
++}
+2. We apply the function from the previous question to each column of the
+table which is a factor:
+> ventil.tab <- function (tab, threshold=0.05) {
++ for (i in 1:ncol(tab)) {
++ if (is.factor(tab[,i])) tab[,i]<-ventilation(tab[,i],p=threshold)
++}
++ return(tab)
++}
+294 R for Statistics
+Exercise 4.3 (Ventilation on an Ordered Factor)
+1. The function is almost or exactly the same as that seen in the answer for
+Exercise 2.7. To the output we add (return) and a few veri_cations:
+> ventilation.y <- function(Xfac,p=0.05) {
++ if (!is.ordered(Xfac)) stop("Xfac must be ordered \n")
++ categories <- levels(Xfac)
++ if (length(categories)<=1) stop("not enough levels \n")
++ tabl <- table(Xfac)
++ selecti <- (tabl/sum(tabl))<p
++ if (!any(selecti)) return(Xfac) else f
++ numero <- which(selecti)
++ while(any((tabl/sum(tabl))<p)) {
+.. paste here the inside of the while loop from Exercise 2.7
++}
++}
++ return(Xfac)
++}
+2. We apply the function from the previous question to each column of the
+table which is an ordinal factor:
+> ventil.y.tab <- function (tab, threshold=0.05) {
++ for (i in 1:ncol(tab)) {
++ if (is.ordered(tab[,i])) tab[,i]<-ventilation.y(tab[,i],threshold)
++}
++ return(tab)
++}
