@@ -1,0 +1,147 @@
+The Repeat loop executes the same code again and again until a stop condition is met.
+
+Syntax
+The basic syntax for creating a repeat loop in R is −
+
+repeat { 
+   commands 
+   if(condition) {
+      break
+   }
+}
+Flow Diagram
+R Repeat Statement
+Example
+ Live Demo
+v <- c("Hello","loop")
+cnt <- 2
+
+repeat {
+   print(v)
+   cnt <- cnt+1
+   
+   if(cnt > 5) {
+      break
+   }
+}
+When the above code is compiled and executed, it produces the following result −
+
+[1] "Hello" "loop" 
+[1] "Hello" "loop" 
+[1] "Hello" "loop" 
+[1] "Hello" "loop" 
+
+
+The While loop executes the same code again and again until a stop condition is met.
+
+Syntax
+The basic syntax for creating a while loop in R is −
+
+while (test_expression) {
+   statement
+}
+Flow Diagram
+R while loop
+Here key point of the while loop is that the loop might not ever run. When the condition is tested and the result is false, the loop body will be skipped and the first statement after the while loop will be executed.
+
+Example
+ Live Demo
+v <- c("Hello","while loop")
+cnt <- 2
+
+while (cnt < 7) {
+   print(v)
+   cnt = cnt + 1
+}
+When the above code is compiled and executed, it produces the following result −
+
+[1] "Hello"  "while loop"
+[1] "Hello"  "while loop"
+[1] "Hello"  "while loop"
+[1] "Hello"  "while loop"
+[1] "Hello"  "while loop"
+
+A For loop is a repetition control structure that allows you to efficiently write a loop that needs to execute a specific number of times.
+
+Syntax
+The basic syntax for creating a for loop statement in R is −
+
+for (value in vector) {
+   statements
+}
+Flow Diagram
+R for loop
+R’s for loops are particularly flexible in that they are not limited to integers, or even numbers in the input. We can pass character vectors, logical vectors, lists or expressions.
+
+Example
+ Live Demo
+v <- LETTERS[1:4]
+for ( i in v) {
+   print(i)
+}
+When the above code is compiled and executed, it produces the following result −
+
+[1] "A"
+[1] "B"
+[1] "C"
+[1] "D"
+
+
+The break statement in R programming language has the following two usages −
+
+When the break statement is encountered inside a loop, the loop is immediately terminated and program control resumes at the next statement following the loop.
+
+It can be used to terminate a case in the switch statement (covered in the next chapter).
+
+Syntax
+The basic syntax for creating a break statement in R is −
+
+break
+Flow Diagram
+R Break Statement
+Example
+ Live Demo
+v <- c("Hello","loop")
+cnt <- 2
+
+repeat {
+   print(v)
+   cnt <- cnt + 1
+	
+   if(cnt > 5) {
+      break
+   }
+}
+When the above code is compiled and executed, it produces the following result −
+
+[1] "Hello" "loop" 
+[1] "Hello" "loop" 
+[1] "Hello" "loop" 
+
+
+The next statement in R programming language is useful when we want to skip the current iteration of a loop without terminating it. On encountering next, the R parser skips further evaluation and starts next iteration of the loop.
+
+Syntax
+The basic syntax for creating a next statement in R is −
+
+next
+Flow Diagram
+R Next Statement
+Example
+ Live Demo
+v <- LETTERS[1:6]
+for ( i in v) {
+   
+   if (i == "D") {
+      next
+   }
+   print(i)
+}
+When the above code is compiled and executed, it produces the following result −
+
+[1] "A"
+[1] "B"
+[1] "C"
+[1] "E"
+[1] "F"
+[1] "Hello" "loop" 
