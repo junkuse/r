@@ -1,0 +1,3 @@
+decimals <- c(3,5,11,4)
+m <- sapply(decimals,function(x){ as.integer(intToBits(x))})
+m
