@@ -103,6 +103,38 @@ When we execute the above code, it produces the following result −
 5              Gary          843.25
 Extract the first two rows and then all columns
 
+
+How can I delete variables (columns) in RStudio?
+6 Answers
+Salman Quaiyum
+Salman Quaiyum, Electrical Engineer, Energy Technologist, Data Analyst
+Answered Sep 2 2016
+Another way of doing it using base R:
+
+test <- data.frame(x = c(1,2,3,4), y = c("a","b","c","d"), z = c("A","B","C","D"))
+  x y z
+1 1 a A
+2 2 b B
+3 3 c C
+4 4 d D
+To remove column “y”:
+
+test2 <- test[,-2]
+  x z
+1 1 A
+2 2 B
+3 3 C
+4 4 D
+Or, alternatively you can select only the columns you want:
+
+test3 <- test[,c(1,3)]
+  x z
+1 1 A
+2 2 B
+3 3 C
+4 4 D
+114.8k views · View 22 Upvoters
+
  Live Demo
 # Create the data frame.
 emp.data <- data.frame(
@@ -216,3 +248,32 @@ When we execute the above code, it produces the following result −
 6      6     Rasmi       578.00     2013-05-21       IT
 7      7     Pranab      722.50     2013-07-30       Operations
 8      8     Tusar       632.80     2014-06-17       Fianance
+
+
+381
+
+You can set it to NULL.
+
+> Data$genome <- NULL
+> head(Data)
+   chr region
+1 chr1    CDS
+2 chr1   exon
+3 chr1    CDS
+4 chr1   exon
+5 chr1    CDS
+6 chr1   exon
+As pointed out in the comments, here are some other possibilities:
+
+Data[2] <- NULL    # Wojciech Sobala
+Data[[2]] <- NULL  # same as above
+Data <- Data[,-2]  # Ian Fellows
+Data <- Data[-2]   # same as above
+You can remove multiple columns via:
+
+Data[1:2] <- list(NULL)  # Marek
+Data[1:2] <- NULL        # does not work!
+Be careful with matrix-subsetting though, as you can end up with a vector:
+
+Data <- Data[,-(2:3)]             # vector
+Data <- Data[,-(2:3),drop=FALSE]  # still a data.frame
