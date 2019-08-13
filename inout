@@ -1,0 +1,60 @@
+Now you can use scan():
+
+> z <- scan()
+1: 12 5
+3: 2
+4:
+Read 3 items
+
+> z
+[1] 12 5 2
+You can use readline() for inputing a line from the keyboard in the form of a string:
+
+> w <- readline()
+xyz vw u
+> w
+[1] "xyz vw u"
+Printing to the Screen
+In interactive mode, one can print the value of that variable by just typing the variable name or expression. In batch mode, one can use the print() function, e.g.
+
+print(x)
+The argument might be an object. So it is a little better to use cat() instead of print(), as the last one can print only one expression and its result is numbered, which may be a nuisance to us. Here is an example written below:
+
+> print("xyz")
+[1] "xyz"
+> cat("xyz \n")
+xyz
+The arguments to cat() will be printed out with intervening spaces, for instance
+
+> g <- 62
+> cat(g,"xyz","gs\n")
+62 kyz gs
+Reading a Matrix or Data Frame from a File
+The function read.table() is used usually. Here is a somewhat more about it:The default value of a header is 'FALSE' and hence when you do not have a header, you need not say such.
+
+Basically, the character strings are considered as R factors. For turning this "feature" off, you can include the argument as.is=T in your call to read.table().
+
+When you have a spreadsheet export file, i.e. having a type .csv where the fields are divided by commas in place of spaces, use read.csv() in place of read.table(). You can also use read.xls for reading core spreadsheet files.
+
+It is to be noted that when you read in a matrix using read.table(), the resultant object will become a data frame, even when all of the entries got to be numeric. You may need it in the form of a matrix, where the case do a followup call towards as.matrix().
+
+For example, let say the matrix x becomes:
+
+1 0 1
+1 1 1
+1 1 0
+1 1 0
+0 0 1
+You can read it into a matrix form like this
+
+> x <- matrix(scan("x"),nrow=5,byrow=T)
+Reading a single File One Line at a Time
+You can use readLines() for this. You need to produce a connection first, by calling the file(). Here is a simple example below:
+
+> c <- file("z","r")
+> readLines(c,n=1)
+[1] "1 3"
+Writing a Table to a File
+R uses the function write.table() that works very much similar to read.table()which writes a data frame instead of reading one. In the case of writing a matrix, to a file, you just need not have to know row or column names like:
+
+> write.table(xc,"xcnew",row.names=F,col.names=F)
