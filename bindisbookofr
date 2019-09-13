@@ -1,0 +1,993 @@
+The dbinom Function
+With this knowledge, you can use R to confirm the result of Pr(X = 5) for
+the die-roll example described a moment ago.
+R> dbinom(x=5,size=8,prob=1/6)
+[1] 0.004167619
+To the dbinom function, you provide the specific value of interest as x; the
+total number of trials, n, as size; and the probability of success at each trial,
+p, as prob. True to R, a vector argument is possible for x. If you want the full
+probability mass function table for X for this example, you can supply the
+vector 0:8 to x.
+R> X.prob <- dbinom(x=0:8,size=8,prob=1/6)
+R> X.prob
+[1] 2.325680e-01 3.721089e-01 2.604762e-01 1.041905e-01 2.604762e-02
+[6] 4.167619e-03 4.167619e-04 2.381497e-05 5.953742e-07
+These can be confirmed to sum to 1.
+R> sum(X.prob)
+[1] 1
+The resulting vector of probabilities, which corresponds to the specific outcomes x = {0, 1, . . ., 8}, is returned using e-notation (refer to Section 2.1.3). You can tidy this up by rounding the results using the round
+function introduced in Section 13.2.2. Rounding to three decimal places,
+the results are easier to read.
+R> round(X.prob,3)
+[1] 0.233 0.372 0.260 0.104 0.026 0.004 0.000 0.000 0.000
+The achievement of one success in eight trials has the highest probability, at approximately 0.372. Furthermore, the mean (expected value)
+and variance of X in this example are µX = np = 8 ×
+1
+6
+= 8/6 and σ
+2
+X
+=
+np(1 − p) = 8 ×
+1
+6
+×
+5
+6
+.
+R> 8/6
+[1] 1.333333
+R> 8*(1/6)*(5/6)
+[1] 1.111111
+You can plot the corresponding probability mass function in the same
+way as for the example in Section 15.2.2; the following line produces Figure 16-1:
+R> barplot(X.prob,names.arg=0:8,space=0,xlab="x",ylab="Pr(X = x)")
+Common Probability Distributions 335
+Figure 16-1: The probability mass function
+associated with the binomial distribution of
+the die-rolling example
+The pbinom Function
+The other R functions for the binomial distribution work in much the same
+way. The first argument is always the value (or values) of interest; n is supplied as size and p as prob. To find, for example, the probability that you
+observe three or fewer 4s, Pr(X ≤ 3), you either sum the relevant individual
+entries from dbinom as earlier or use pbinom.
+R> sum(dbinom(x=0:3,size=8,prob=1/6))
+[1] 0.9693436
+R> pbinom(q=3,size=8,prob=1/6)
+[1] 0.9693436
+Note that the pivotal argument to pbinom is tagged q, not x; this is
+because, in a cumulative sense, you are searching for a probability based
+on a quantile. The cumulative distribution results from pbinom can be used
+in the same way to search for “upper-tail” probabilities (probabilities to the
+right of a given value) since you know that the total probability mass is always
+1. To find the probability that you observe at least three 4s in eight rolls of
+the die, Pr(X ≥ 3) (which is equivalent to Pr(X > 2) in the context of this
+discrete random variable), note that the following finds the correct result
+because it’s the complement of Pr(X ≤ 2) that you’re looking for:
+R> 1-pbinom(q=2,size=8,prob=1/6)
+[1] 0.1348469
+336 Chapter 16
+The qbinom Function
+Less frequently used is the qbinom function, which is the inverse of pbinom.
+Where pbinom provides a cumulative probability when given a quantile value
+q, the function qbinom provides a quantile value when given a cumulative
+probability p. The discrete nature of a binomial random variable means
+qbinom will return the nearest value of x below which p lies. For example,
+note that
+R> qbinom(p=0.95,size=8,prob=1/6)
+[1] 3
+provides 3 as the quantile value, even though you know from earlier that
+the exact probability that lies at or below 3, Pr(X ≤ 3), is 0.9693436. You’ll
+look at p- and q-functions more when dealing with continuous probability
+distributions; see Section 16.2.
+The rbinom Function
+Lastly, the random generation of realizations of a binomially distributed variable is retrieved using the rbinom function. Again, going with the BIN(8,
+1
+6
+)
+distribution, note the following:
+R> rbinom(n=1,size=8,prob=1/6)
+[1] 0
+R> rbinom(n=1,size=8,prob=1/6)
+[1] 2
+R> rbinom(n=1,size=8,prob=1/6)
+[1] 2
+R> rbinom(n=3,size=8,prob=1/6)
+[1] 2 1 1
+The initial argument n doesn’t refer to the number of trials. The number of trials is still provided to size with p given to prob. Here, n requests
+the number of realizations you want to generate for the random variable
+X ∼ BIN(8,
+1
+6
+). The first three lines each request a single realization—in
+the first eight rolls, you observe zero successes (4s), and in the second and
+third sets of eight rolls, you observe two and two 4s, respectively. The fourth
+line highlights the fact that multiple realizations of X are easily obtained and
+stored as a vector by increasing n. As these are randomly generated realizations,
+if you run these lines now, you’ll probably observe some different values.
+Though not used often in standard statistical testing methods, the rfunctions for probability distributions, either discrete or continuous, play an
+important role when it comes to simulation and various advanced numeric
+algorithms in computational statistics.
+Common Probability Distributions 337
+
+
+Exercise 16.1
+A forested nature reserve has 13 bird-viewing platforms scattered
+throughout a large block of land. The naturalists claim that at
+any point in time, there is a 75 percent chance of seeing birds at
+each platform. Suppose you walk through the reserve and visit
+every platform. If you assume that all relevant conditions are satisfied, let X be a binomial random variable representing the total
+number of platforms at which you see birds.
+a. Visualize the probability mass function of the binomial distribution of interest.
+b. What is the probability you see birds at all sites?
+c. What is the probability you see birds at more than 9 platforms?
+d. What is the probability of seeing birds at between 8 and 11
+platforms (inclusive)? Confirm your answer by using only the
+d-function and then again using only the p-function.
+e. Say that, before your visit, you decide that if you see birds at
+fewer than 9 sites, you’ll make a scene and demand your entry
+fee back. What’s the probability of your embarrassing yourself in
+this way?
+f. Simulate realizations of X that represent 10 different visits to the
+reserve; store your resulting vector as an object.
+g. Compute the mean and standard deviation of the distribution of
+interest.
+16.1.3 Poisson Distribution
+In this section, you’ll use the Poisson distribution to model a slightly more
+general, but just as important, discrete random variable—a count. For
+example, the variable of interest might be the number of seismic tremors
+detected by a certain station in a given year or the number of imperfections
+found on square-foot pieces of sheet metal coming off a factory production line.
+Importantly, the events or items being counted are assumed to manifest
+independently of one another. In mathematical terms, for a discrete random variable and a realization X = x, the Poisson mass function f is given
+as follows, where λp is a parameter of the distribution (this will be explained
+further momentarily):
+f (x) =
+λ
+x
+p exp(−λp)
+x!
+; x = {0,1,. . .} (16.4)
+The notation
+X ∼ POIS(λp)
+338 Chapter 16
+is often used to indicate that “X follows a Poisson distribution with parameter λp.”
+The following are the keys points to remember:
+• The entities, features, or events being counted occur independently in a
+well-defined interval at a constant rate.
+• X can take only non-negative integers: 0,1,. . ..
+• λp should be interpreted as the “mean number of occurrences” and
+must therefore be finite and strictly positive; that is, 0 < λp < ∞.
+The mean and variance are as follows:
+µX = λp and σ
+2
+X
+= λp
+Like the binomial random variable, the values taken by a Poisson random variable are discrete, non-negative integers. Unlike the binomial, however, there’s typically no upper limit on a Poisson count. While this implies
+that an “infinite count” is allowed to occur, it’s a distinct feature of the Poisson distribution that the probability mass associated with some value x goes
+to zero as x itself goes to infinity.
+As noted in Equation (16.4), any Poisson distribution depends upon the
+specification of a single parameter, denoted here with λp. This parameter
+describes the mean number of occurrences, which impacts the overall shape
+of the mass function, as shown in Figure 16-2.
+Figure 16-2: Three examples of the Poisson probability mass function, plotted for 0 ≤ x ≤
+30. The “expected count” parameter λp is altered from 3.00 (left) to 6.89 (middle) and to
+17.20 (right).
+Again, it’s worth noting that the total probability mass over all possible
+outcomes is 1, no matter what the value of λp is and regardless of the fact
+that possible outcomes can, technically, range from 0 to infinity.
+By definition, it’s easy to understand why the mean of X, µX, is equal
+to λp; in fact, it turns out that the variance of a Poisson distributed random
+variable is also equal to λp.
+Consider the example of blemishes on 1-foot-square sheets of metal
+coming off a production line, mentioned in the opening of this section. Suppose you’re told that the number of blemishes found, X, is thought to follow
+a Poisson distribution with λp = 3.22, as in X ∼ POIS(3.22). In other words,
+you’d expect to see an average of 3.22 blemishes on your 1-foot sheets.
+Common Probability Distributions 339
+The dpois and ppois Functions
+The R dpois function provides the individual Poisson mass function probabilities Pr(X = x) for the Poisson distribution. The ppois function provides the
+left cumulative probabilities, as in Pr(X ≤ x). Consider the following lines
+of code:
+R> dpois(x=3,lambda=3.22)
+[1] 0.2223249
+R> dpois(x=0,lambda=3.22)
+[1] 0.03995506
+R> round(dpois(0:10,3.22),3)
+[1] 0.040 0.129 0.207 0.222 0.179 0.115 0.062 0.028 0.011 0.004 0.001
+The first call finds that Pr(X = 3) = 0.22 (to 2 d.p.); in other words, the
+probability that you observe exactly three blemishes on a randomly selected
+piece of sheet metal is equal to about 0.22. The second call indicates a less
+than 4 percent chance that the piece is flawless. The third line returns a
+rounded version of the relevant mass function for the values 0 ≤ x ≤ 10.
+By hand you can confirm the first result like this:
+R> (3.22^3*exp(-3.22))/prod(3:1)
+[1] 0.2223249
+You create a visualization of the mass function with the following:
+R> barplot(dpois(x=0:10,lambda=3.22),ylim=c(0,0.25),space=0,
+names.arg=0:10,ylab="Pr(X=x)",xlab="x")
+This is shown on the left of Figure 16-3.
+Figure 16-3: The Poisson probability mass function (left) and cumulative distribution
+function (right) for λp = 3.22 plotted for the integers 0 ≤ x ≤ 10, with reference to the
+sheet metal example
+340 Chapter 16
+To calculate cumulative results, you use ppois.
+R> ppois(q=2,lambda=3.22)
+[1] 0.3757454
+R> 1-ppois(q=5,lambda=3.22)
+[1] 0.1077005
+These lines find that the probability you observe at most two imperfections, Pr(X ≤ 2), is about 0.38, and the probability you observe strictly more
+than five blemishes, Pr(X ≥ 6), is roughly 0.11.
+A visualization of the cumulative mass function is given on the right of
+Figure 16-3, created with the following:
+R> barplot(ppois(q=0:10,lambda=3.22),ylim=0:1,space=0,
+names.arg=0:10,ylab="Pr(X<=x)",xlab="x")
+The qpois Function
+The q-function for the Poisson distribution, qpois, provides the inverse of
+ppois, in the same way as qbinom in Section 16.1.2 provides the inverse of
+pbinom.
+The rpois Function
+To produce random variates, you use rpois; you supply the number of variates you want as n and supply the all-important parameter as lambda. You can
+imagine
+R> rpois(n=15,lambda=3.22)
+[1] 0 2 9 1 3 1 9 3 4 3 2 2 6 3 5
+as selecting fifteen 1-foot-square metal sheets from the production line at
+random and counting the number of blemishes on each. Note again that
+this is random generation; your specific results are likely to vary.
+
+
+Exercise 16.2
+Every Saturday, at the same time, an individual stands by the side of
+a road and tallies the number of cars going by within a 120-minute
+window. Based on previous knowledge, she believes that the mean
+number of cars going by during this time is exactly 107. Let X represent the appropriate Poisson random variable of the number of cars
+passing her position in each Saturday session.
+a. What is the probability that more than 100 cars pass her on any
+given Saturday?
+b. Determine the probability that no cars pass.
+Common Probability Distributions 341
+c. Plot the relevant Poisson mass function over the values in
+60 ≤ x ≤ 150.
+d. Simulate 260 results from this distribution (about five years of
+weekly Saturday monitoring sessions). Plot the simulated results
+using hist; use xlim to set the horizontal limits from 60 to 150.
+Compare your histogram to the shape of your mass function
+from (c).
+16.1.4 Other Mass Functions
+There are many other well-defined probability mass functions in R’s built-in
+suite of statistical calculations. All model a discrete random variable in a certain way under certain conditions and are defined with at least one parameter, and most are represented by their own set of d-, p-, q-, and r-functions.
+Here I summarize a few more:
+• The geometric distribution counts the number of failures before a success
+is recorded and is dependent on a “probability of success parameter”
+prob. Its functions are dgeom, pgeom, qgeom, and rgeom.
+• The negative binomial distribution is a generalization of the geometric
+distribution, dependent upon parameters size (number of trials) and
+prob. Its functions are dnbinom, pnbinom, qnbinom, and rnbinom.
+• The hypergeometric distribution is used to model sampling without
+replacement (in other words, a “success” can change the probabilities
+associated with further successes), dependent upon parameters m, n, and
+k describing the nature of sampled items. Its functions are dhyper, phyper,
+qhyper, and rhyper.
+• The multinomial distribution is a generalization of the binomial, where a
+success can occur in one of multiple categories at each trial, with parameters size and prob (this time, prob must be a vector of probabilities corresponding to the multiple categories). Its built-in functions are limited
+to dmultinom and rmultinom.
+As noted earlier, some familiar probability distributions are just simplifications or special cases of functions that describe a more general class of
+distributions.
+16.2 Common Probability Density Functions
+When considering continuous random variables, you need to deal with probability density functions. There are a number of common continuous probability distributions frequently used over many different types of problems. In
+this section, you’ll be familiarized with some of these and R’s accompanying
+d-, p-, q-, and r-functions.
+342 Chapter 16
+16.2.1 Uniform
+The uniform distribution is a simple density function that describes a continuous random variable whose interval of possible values offers no fluctuations in probability. This will become clear in a moment when you plot
+Figure 16-4.
+Figure 16-4: Two uniform distributions plotted on the same scale for comparability. Left:
+X ∼ UNIF(−0.4,1.1); right: X ∼ UNIF(0.223,0.410). The total area underneath each
+density function is, as always, 1.
+For a continuous random variable a ≤ X ≤ b, the uniform density function f is
+f (x) =
+
+
+
+
+1
+b−a
+if a ≤ x ≤ b;
+0 otherwise
+(16.5)
+where a and b are parameters of the distribution defining the limits of the
+possible values X can take. The notation
+X ∼ UNIF(a, b)
+is often used to indicate that “X follows a uniform distribution with limits a
+and b.”
+The following are the key points to remember:
+• X can take any value in the interval bounded by a and b.
+• a and b can be any values, provided that a < b, and they represent the
+lower and upper limits, respectively, of the interval of possible values.
+The mean and variance are as follows:
+µX =
+a + b
+2
+and σ
+2
+X
+=
+(b − a)
+2
+12
+For the more complicated densities in this section, it’s especially useful
+to visualize the functions in order to understand the probabilistic structure
+associated with a continuous random variable. For the uniform distribution,
+Common Probability Distributions 343
+given Equation (16.5), you can recognize the two different uniform distributions shown in Figure 16-4. I’ll provide the code to produce these types of
+plots shortly.
+For the left plot in Figure 16-4, you can confirm the exact height of
+the X ∼ UNIF(−0.4,1.1) density by hand: 1/{1.1 − (−0.4)} = 1/1.5 =
+2
+3
+.
+For the plot on the right, based on X ∼ UNIF(0.223,0.410), you can use R
+to find that its height is roughly 5.35.
+R> 1/(0.41-0.223)
+[1] 5.347594
+The dunif Function
+You can use the built-in d-function for the uniform distribution, dunif, to
+return these heights for any value within the defined interval. The dunif
+command returns zero for values outside of the interval. The parameters of
+the distribution, a and b, are provided as the arguments min and max, respectively. For example, the line
+R> dunif(x=c(-2,-0.33,0,0.5,1.05,1.2),min=-0.4,max=1.1)
+[1] 0.0000000 0.6666667 0.6666667 0.6666667 0.6666667 0.0000000
+evaluates the uniform density function of X ∼ UNIF(−0.4,1.1) at the values
+given in the vector passed to x. You’ll notice that the first and last values fall
+outside the bounds defined by min and max, and so they are zero. All others
+evaluate to the height value of 2
+3
+, as previously calculated.
+As a second example, the line
+R> dunif(x=c(0.3,0,0.41),min=0.223,max=0.41)
+[1] 5.347594 0.000000 5.347594
+confirms the correct density values for the X ∼ UNIF(0.223,0.410) distribution, with the second value, zero, falling outside the defined interval.
+This most recent example in particular should remind you that probability density functions for continuous random variables, unlike mass functions for discrete variables, do not directly provide probabilities, as mentioned in Section 15.2.3. In other words, the results just returned by dunif
+represent the respective density functions themselves and not any notion of
+chance attached to the specific values of x at which they were evaluated.
+To calculate some probabilities based on the uniform density function,
+use the example of a faulty drill press. In a woodworker’s shop, imagine
+there’s a drill press that cannot keep to a constant alignment when in use;
+instead, it randomly hits the intended target at up to 0.4 cm to the left or
+1.1 cm to the right. Let the random variable X ∼ UNIF(−0.4,1.1) represent where the drill hits the material relative to the target at 0. Figure 16-5
+replots the left image of Figure 16-4 on a more detailed scale. You have
+three versions, each marking off a different area under the density function: Pr(X ≤ −0.21), Pr(−0.21 ≤ X ≤ 0.6), and Pr(X ≥ 0.6).
+344 Chapter 16
+Figure 16-5: Three areas underneath the X ∼ UNIF(−0.4,1.1) density function for the drill
+press example. Left: Pr(X ≤ −0.21); middle: Pr(−0.21 ≤ X ≤ 0.6); right: Pr(X ≥ 0.6).
+These plots are created using the coordinate-based plotting skills covered in Chapter 7. The density itself is presented with the following:
+R> a1 <- -4/10
+R> b1 <- 11/10
+R> unif1 <- 1/(b1-a1)
+R> plot(c(a1,b1),rep(unif1,2),type="o",pch=19,xlim=c(a1-1/10,b1+1/10),
+ylim=c(0,0.75),ylab="f(x)",xlab="x")
+R> abline(h=0,lty=2)
+R> segments(c(a1-2,b1+2,a1,b1),rep(0,4),rep(c(a1,b1),2),rep(c(0,unif1),each=2),
+lty=rep(1:2,each=2))
+R> points(c(a1,b1),c(0,0))
+You can use much of the same code to produce the plots in Figure 16-4
+by modifying the xlim and ylim arguments to adjust the scale of the axes.
+You add the vertical lines denoting f (−0.21) and f (0.6) in Figure 16-5
+with another call to segments.
+R> segments(c(-0.21,0.6),c(0,0),c(-0.21,0.6),rep(unif1,2),lty=3)
+Finally, you can shade the areas using the polygon function, which was
+first explored in Section 15.2.3. For example, in the leftmost plot in Figure 16-5, use the previous plotting code followed by this:
+R> polygon(rbind(c(a1,0),c(a1,unif1),c(-0.21,unif1),c(-0.21,0)),col="gray",
+border=NA)
+As mentioned earlier, the three shaded areas in Figure 16-5 represent,
+from left to right, Pr(X < −0.21), Pr(−0.21 < X < 0.6), and Pr(X > 0.6),
+respectively. In terms of the drill press example, you can interpret these
+as the probability that the drill hits the target 0.21 cm to the left or more,
+the probability that the drill hits the target between 0.21 cm to the left
+and 0.6 cm to the right, and the probability that the drill hits the target
+0.6 cm to the right or more, respectively. (Remember from Section 15.2.3
+that it makes no difference if you use ≤ or < (or ≥ or >) for probabilities
+Common Probability Distributions 345
+associated with continuous random variables.) Though you could evaluate
+these probabilities geometrically for such a simple density function, it’s still
+faster to use R.
+The punif Function
+Remember that probabilities associated with continuous random variables
+are defined as areas under the function, and therefore your study focuses on
+the appropriate intervals of X rather than any specific value. The p-function
+for densities, just like the p-function for discrete random variables, provides
+the cumulative probability distribution Pr(X ≤ x). In the context of the uniform density, this means that given a specific value of x (supplied as a “quantile” argument q), punif will provide the left-directional area underneath the
+function from that specific value.
+Accessing punif, the line
+R> punif(-0.21,min=a1,max=b1)
+[1] 0.1266667
+tells you that the leftmost area in Figure 16-5 represents a probability of
+about 0.127. The line
+R> 1-punif(q=0.6,min=a1,max=b1)
+[1] 0.3333333
+tells you that Pr(X > 0.6) =
+1
+3
+. The final result for Pr(−0.21 < X < 0.6), giving a 54 percent chance, is found with
+R> punif(q=0.6,min=a1,max=b1) - punif(q=-0.21,min=a1,max=b1)
+[1] 0.54
+since the first call provides the area under the density from 0.6 all the way
+left and the second call provides the area from −0.21 all the way left. Therefore, this difference is the middle area as defined.
+It’s essential to be able to manipulate cumulative probability results
+like this when working with probability distributions in R, and the beginner
+might find it useful to sketch out the desired area before using p-functions,
+especially with respect to density functions.
+The qunif Function
+The q-functions for densities are used more often than they are for mass
+functions because the continuous nature of the variable means that a unique
+quantile value can be found for any valid probability p.
+The qunif function is the inverse of punif:
+R> qunif(p=0.1266667,min=a1,max=b1)
+[1] -0.21
+R> qunif(p=1-1/3,min=a1,max=b1)
+[1] 0.6
+346 Chapter 16
+These lines confirm the values of X used earlier to get the lower- and
+upper-tail probabilities Pr(X < −0.21) and Pr(X > 0.6), respectively. Any
+q-function expects a cumulative (in other words, left-hand) probability as its
+first argument, which is why you need to supply 1-1/3 in the second line to
+recover 0.6. (The total area is 1. You know that you want the area to the right
+of 0.6 to be 1
+3
+; thus, the area on the left must be 1 −
+1
+3
+.)
+The runif Function
+Lastly, to generate random realizations of a specific uniform distribution,
+you use runif. Let’s say the woodworker drills 10 separate holes using the
+faulty press; you can simulate one instance of the position of each of these
+holes relative to their target with the following call.
+R> runif(n=10,min=a1,max=b1)
+[1] -0.2429272 -0.1226586 0.9318365 0.4829028 0.5963365
+[6] 0.2009347 0.3073956 -0.1416678 0.5551469 0.4033372
+Again, note that the specific values of r-function calls like runif will be
+different each time they are run.
+
+
+Exercise 16.3
+You visit a national park and are informed that the height of a certain
+species of tree found in the forest is uniformly distributed between 3
+and 70 feet.
+a. What is the probability you encounter a tree shorter than
+5
+1
+2
+feet?
+b. For this probability density function, what is the height that
+marks the cutoff point of the tallest 15 percent of trees?
+c. Evaluate the mean and standard deviation of the tree height
+distribution.
+d. Using (c), confirm that the chance that you encounter a tree
+with a height that is within half a standard deviation (that is,
+below or above) of the mean height is roughly 28.9 percent.
+e. At what height is the density function itself? Show it in a plot.
+f. Simulate 10 observed tree heights. Based on these data, use
+quantile (refer to Section 13.2.3) to estimate the answer you
+arrived at in (b). Repeat your simulation, this time generating
+1,000 variates, and estimate (b) again. Do this a handful of
+times, taking a mental note of your two estimates each time.
+Overall, what do you notice of your two estimates (one based on
+10 variates at a time and the other based on 1,000) with respect
+to the “true” value in (b)?
+Common Probability Distributions 347
+16.2.2 Normal
+The normal distribution is one of the most well-known and commonly applied
+probability distributions in modeling continuous random variables. Characterized by a distinctive “bell-shaped” curve, it’s also referred to as the
+Gaussian distribution.
+For a continuous random variable −∞ < X < ∞, the normal density
+function f is
+f (x) =
+1
+σ
+√
+2π
+exp (
+−
+(x − µ)
+2
+2σ2
+)
+(16.6)
+where µ and σ are parameters of the distribution, π is the familiar geometric value 3.1415 . . ., and exp{ · } is the exponential function (refer to Section 2.1.2). The notation
+X ∼ N(µ,σ)
+is often used to indicate that “X follows a normal distribution with mean µ
+and standard deviation σ.”
+The following are the key points to remember:
+• Theoretically, X can take any value from −∞ to ∞.
+• As hinted at earlier, the parameters µ and σ directly describe the mean
+and the standard deviation of the distribution, with the square of the
+latter, σ
+2
+, being the variance.
+• In practice, the mean parameter is finite −∞ < µ < ∞, and the standard
+deviation parameter is strictly positive and finite 0 < σ < ∞.
+• If you have a random variable X ∼ N(µ,σ), then you can create a new
+random variable Z = (X − µ)/σ, which means Z ∼ N(0,1). This is known
+as standardization of X.
+The two parameters noted earlier fully define a particular normal distribution. These are always perfectly symmetric, unimodal, and centered on
+the mean µ, and they have a degree of “spread” defined using the standard
+deviation σ.
+The top image of Figure 16-6 provides the density functions for four
+specific normal distributions. You can see that altering the mean results
+in a translation, where the center of the distribution is simply shifted to sit
+on the specific value of µ. The effect of a smaller standard deviation is to
+reduce the spread, resulting in a taller, skinnier appearance of the density.
+Increasing σ flattens the density out around the mean.
+The bottom image zooms in on the N(0,1) distribution when you have
+a normal density centered on µ = 0 and with a standard deviation of σ = 1.
+This distribution, known as the standard normal, is frequently used as a standard reference to compare different normally distributed random variables
+with one another on the same scale of probabilities. It’s common practice to
+rescale, or standardize, some variable X ∼ N(µX,σX ) to a new variable Z such
+that Z ∼ N(0,1) (you’ll see this practiced in Chapter 18). Vertical lines in
+the plot show plus or minus one, two, and three times the standard deviation
+away from the mean of zero. This serves to highlight the fact that for any
+348 Chapter 16
+normal distribution, a probability of exactly 0.5 lies either above or below
+the mean. Furthermore, note that there’s a probability of approximately
+0.683 of a value falling within one standard deviation of the mean, approximately 0.954 probability under the curve from −2σ to +2σ, and approximately 0.997 probability between −3σ and +3σ.
+Figure 16-6: Illustrating the normal distribution. Top: Four
+different instances of the density achieved by varying the mean
+µ and standard deviation σ. Bottom: The “standard normal”
+distribution, N(0,1), marking off the mean ±1σ, ±2σ, and ±3σ.
+NOTE The mathematical definition of the normal density means that as you move further
+away from the mean, the value of the density function itself will approach zero. In
+actual fact, any normal density function never actually touches the horizontal line
+at zero; it just gets closer and closer as you move to positive or negative infinity. This
+behavior is formally referred to as asymptotic; in this case, you’d say that the normal
+distribution f (x) has a horizontal asymptote at f (x) = 0. In discussing probabilities as areas under the curve, you’d refer to the fact that “the total area under the curve
+from negative to positive infinity” is 1, in other words, R ∞
+−∞
+f (x) dx = 1.
+Common Probability Distributions 349
+The dnorm Function
+Being a probability density function, the dnorm function itself doesn’t provide
+probabilities—merely the value of the desired normal function curve f (x) at
+any x. To plot a normal density, you’d therefore be able to use seq (refer to
+Section 2.3.2) to create a fine sequence of values for x, evaluate the density
+at these values with dnorm, and then plot the result as a line. For example,
+to produce an image of the standard normal distribution curve similar to
+that in the bottom image of Figure 16-6, the following code will create the
+desired x values as xvals.
+R> xvals <- seq(-4,4,length=50)
+R> fx <- dnorm(xvals,mean=0,sd=1)
+R> fx
+[1] 0.0001338302 0.0002537388 0.0004684284 0.0008420216 0.0014737603
+[6] 0.0025116210 0.0041677820 0.0067340995 0.0105944324 0.0162292891
+[11] 0.0242072211 0.0351571786 0.0497172078 0.0684578227 0.0917831740
+[16] 0.1198192782 0.1523049307 0.1885058641 0.2271744074 0.2665738719
+[21] 0.3045786052 0.3388479358 0.3670573564 0.3871565916 0.3976152387
+[26] 0.3976152387 0.3871565916 0.3670573564 0.3388479358 0.3045786052
+[31] 0.2665738719 0.2271744074 0.1885058641 0.1523049307 0.1198192782
+[36] 0.0917831740 0.0684578227 0.0497172078 0.0351571786 0.0242072211
+[41] 0.0162292891 0.0105944324 0.0067340995 0.0041677820 0.0025116210
+[46] 0.0014737603 0.0008420216 0.0004684284 0.0002537388 0.0001338302
+Then dnorm, which includes specification of µ as mean and σ as sigma,
+produces the precise values of f (x) at those xvals. Finally, a call such as
+plot(xvals,fx,type="l") achieves the bare bones of a density plot, which
+you can easily enhance by adding titles and using commands such as abline
+and segments to mark locations off (I’ll produce another plot in a moment,
+so this basic one isn’t shown here).
+Note that if you don’t supply any values to mean and sd, the default
+behavior of R is to implement the standard normal distribution; the object
+fx shown earlier could have been created with an even shorter call using just
+dnorm(xvals).
+The pnorm Function
+The pnorm function obtains left-side probabilities under the specified normal
+density. As with dnorm, if no parameter values are supplied, R automatically
+sets mean=0 and sd=1. In the same way you used punif in Section 16.2.1, you
+can find differences of results from pnorm to find any areas you want when
+you provide the function with the desired values in the argument q.
+For example, it was mentioned earlier that a probability of approximately 0.683 lies within one standard deviation of the mean. You can confirm this using pnorm for the standard normal.
+R> pnorm(q=1)-pnorm(q=-1)
+[1] 0.6826895
+350 Chapter 16
+The first call to pnorm evaluates the area under the curve from positive 1 left (in other words, all the way to −∞) and then finds the difference between that and the area from −1 left. The result reflects the proportion between the two dashed lines in the bottom of Figure 16-6. These
+kinds of probabilities will be the same for any normal distribution. Consider the distribution where µ = −3.42 and σ = 0.2. Then the following
+provides the same value:
+R> mu <- -3.42
+R> sigma <- 0.2
+R> mu.minus.1sig <- mu-sigma
+R> mu.minus.1sig
+[1] -3.62
+R> mu.plus.1sig <- mu+sigma
+R> mu.plus.1sig
+[1] -3.22
+R> pnorm(q=mu.plus.1sig,mean=mu,sd=sigma) -
+pnorm(q=mu.minus.1sig,mean=mu,sd=sigma)
+[1] 0.6826895
+It takes a little more work to specify the distribution of interest since it’s
+not standard, but the principle is the same: plus and minus one standard
+deviation away from the mean.
+The symmetry of the normal distribution is also useful when it comes
+to calculating probabilities. Sticking with the N(3.42,0.2) distribution, you
+can see that the probability you make an observation greater than µ + σ =
+−3.42 + 0.2 = −3.22 (an upper-tail probability) is identical to the probability
+of making an observation less than µ − σ = −3.42 − 0.2 = −3.62 (a lower-tail
+probability).
+R> 1-pnorm(mu.plus.1sig,mu,sigma)
+[1] 0.1586553
+R> pnorm(mu.minus.1sig,mu,sigma)
+[1] 0.1586553
+You can also evaluate these values by hand, given the result you computed earlier that says Pr(µ − σ < X < µ + σ) = 0.6826895. The remaining
+probability outside of this middle area must be as follows:
+R> 1-0.6826895
+[1] 0.3173105
+So, in each of the lower- and upper-tail areas marked off by µ − σ and
+µ + σ, respectively, there must be a probability of the following:
+R> 0.3173105/2
+[1] 0.1586552
+Common Probability Distributions 351
+This is what was just found using pnorm (note that there can be some
+minor rounding errors in these types of calculations). You can see this in
+Figure 16-7, which is, initially, plotted with the following:
+R> xvals <- seq(-5,-2,length=300)
+R> fx <- dnorm(xvals,mean=mu,sd=sigma)
+R> plot(xvals,fx,type="l",xlim=c(-4.4,-2.5),main="N(-3.42,0.2) distribution",
+xlab="x",ylab="f(x)")
+R> abline(h=0,col="gray")
+R> abline(v=c(mu.plus.1sig,mu.minus.1sig),lty=3:2)
+R> legend("topleft",legend=c("-3.62\n(mean - 1 sd)","\n-3.22\n(mean + 1 sd)"),
+lty=2:3,bty="n")
+Figure 16-7: Illustrating the example in the text, where the symmetry of the normal distribution is used to point out features of
+probabilities under the curve. Note that the total area under the
+density is 1, which in conjunction with symmetry is useful for
+making calculations.
+To add the shaded area between µ ± σ, you can use polygon, for which
+you need the vertices of the shape of interest. To get a smooth curve, make
+use of the fine sequence xvals and corresponding fx as defined in the code,
+and use logical vector subsetting to restrict attention to those locations of x
+such that −3.62 ≤ x ≤ −3.22.
+352 Chapter 16
+R> xvals.sub <- xvals[xvals>=mu.minus.1sig & xvals<=mu.plus.1sig]
+R> fx.sub <- fx[xvals>=mu.minus.1sig & xvals<=mu.plus.1sig]
+You can then sandwich these between the two corners at the bottom
+of the shaded polygon using the matrix structure that the polygon function
+expects.
+R> polygon(rbind(c(mu.minus.1sig,0),cbind(xvals.sub,fx.sub),c(mu.plus.1sig,0)),
+border=NA,col="gray")
+Finally, arrows and text indicate the areas discussed in the text.
+R> arrows(c(-4.2,-2.7,-2.9),c(0.5,0.5,1.2),c(-3.7,-3.15,-3.4),c(0.2,0.2,1))
+R> text(c(-4.2,-2.7,-2.9),c(0.5,0.5,1.2)+0.05,
+labels=c("0.159","0.159","0.682"))
+The qnorm Function
+Let’s turn to qnorm. To find the quantile value that will give you a lower-tail
+probability of 0.159, you use the following:
+R> qnorm(p=0.159,mean=mu,sd=sigma)
+[1] -3.619715
+Given the earlier results and what you already know about previous qfunctions, it should be clear why the result is a value of approximately −3.62.
+You find the upper quartile (the value above which you’d find a probability of
+0.25) with this:
+R> qnorm(p=1-0.25,mean=mu,sd=sigma)
+[1] -3.285102
+Remember that the q-function will operate based on the (left) lower-tail
+probability, so to find a quantile based on an upper-tail probability, you must
+first subtract it from the total probability of 1.
+In some methods and models used in frequentist statistics, it’s common
+to assume that your observed data are normal. You can test the validity of
+this assumption by using your knowledge of the theoretical quantiles of
+the normal distribution, found in the results of qnorm: calculate a range of
+sample quantile values for your observed data and plot these against the
+same quantiles for a correspondingly standardized normal distribution.
+This visual tool is referred to as a normal quantile-quantile or QQ plot and is
+useful when viewed alongside a histogram. If the plotted points don’t lie on
+a straight line, then the quantiles from your data do not match the appearance of those from a normal curve, and the assumption that your data are
+normal may not be valid.
+Common Probability Distributions 353
+The built-in qqnorm function takes in your raw data and produces the corresponding plot. Go back once more to the ready-to-use chickwts data set.
+Let’s say you want to find out whether it’s reasonable to assume the weights
+are normally distributed. To that end, you use
+R> hist(chickwts$weight,main="",xlab="weight")
+R> qqnorm(chickwts$weight,main="Normal QQ plot of weights")
+R> qqline(chickwts$weight,col="gray")
+to produce the histogram of the 71 weights and the normal QQ plot given in
+Figure 16-8. The additional qqline command adds the “optimal” line that the
+coordinates would lie along if the data were perfectly normal.
+Figure 16-8: Histogram (left) and normal QQ plot (right) of the weights of chicks in the
+chickwts data set. Are the data normally distributed?
+If you inspect the histogram of the weights, you can see that the data
+match the general appearance of a normal distribution, with a roughly symmetric unimodal appearance. That said, it doesn’t quite achieve the smoothness and naturally decaying height that produces the familiar normal bell
+shape. This is reflected in the QQ plot on the right; the central quantile
+values appear to lie on the line relatively well, except for some relatively
+minor “wiggles.” There are some clear discrepancies in the outer tails, but
+note that it is typical to observe discrepancies in these extreme quantiles in
+any QQ plot because fewer data points naturally occur there. Taking all of
+this into consideration, for this example the assumption of normality isn’t
+completely unreasonable.
+NOTE It’s important to consider the sample size when assessing the validity of these kinds
+of assumptions; the larger the sample size, the less random variability will creep into
+the histogram and QQ plot, and you can more confidently reach a conclusion about
+whether your data are normal. For instance, the assumption of normality in this
+example may be complicated by the fact there’s a relatively small sample size of only 71.
+354 Chapter 16
+The rnorm Function
+Random variates of any given normal distribution are generated with rnorm;
+for example, the line
+R> rnorm(n=7,mu,sigma)
+[1] -3.764532 -3.231154 -3.124965 -3.490482 -3.884633 -3.192205 -3.475835
+produces seven normally distributed values arising from N(−3.42,0.2). In
+contrast to the QQ plot produced for the chick weights in Figure 16-8,
+you can use rnorm, qqnorm, and qqline to examine the degree to which hypothetically observed data sets that are truly normal vary in the context of a
+QQ plot.
+The following code generates 71 standard normal values and produces a
+corresponding normal QQ plot and then does the same for a separate data
+set of n = 710; these are displayed in Figure 16-9.
+R> fakedata1 <- rnorm(n=71)
+R> fakedata2 <- rnorm(n=710)
+R> qqnorm(fakedata1,main="Normal QQ plot of generated N(0,1) data; n=71")
+R> qqline(fakedata1,col="gray")
+R> qqnorm(fakedata2,main="Normal QQ plot of generated N(0,1) data; n=710")
+R> qqline(fakedata2,col="gray")
+Figure 16-9: Normal QQ plots of 71 (left) and 710 (right) observations randomly generated from the standard normal distribution
+You can see that the QQ plot for the simulated data set of size n = 71
+shows similar deviation from the optimal line as does the chick weights data
+set. Bumping the sample size up by a factor of 10 shows that the QQ plot
+for the n = 710 normal observations offers up far less random variation,
+although visible discrepancies in the tails do still occur. A good way to get
+used to assessing these effects is to rerun these lines of code several times
+Common Probability Distributions 355
+(in other words, generating new data sets each time) and examine how each
+new QQ plot varies.
+Normal Functions in Action: A Quick Example
+Let’s finish this section with one more working problem. Assume the manufacturer of a certain type of snack knows that the total net weight of the
+snacks in its 80-gram advertised package, X, is normally distributed with a
+mean of 80.2 grams and a standard deviation of 1.1 grams. The manufacturer weighs the contents of randomly selected individual packets. The probability a randomly selected packet is less than 78 grams (that is, Pr(X < 78))
+is as follows:
+R> pnorm(78,80.2,1.1)
+[1] 0.02275013
+The probability a packet is found to weigh between 80.5 and 81.5 grams
+is as follows:
+R> pnorm(81.5,80.2,1.1)-pnorm(80.5,80.2,1.1)
+[1] 0.2738925
+The weight below which the lightest 20 percent of packets lie is as
+follows:
+R> qnorm(0.2,80.2,1.1)
+[1] 79.27422
+A simulation of five randomly selected packets can be found with the
+following:
+R> round(rnorm(5,80.2,1.1),1)
+[1] 78.6 77.9 78.6 80.2 80.8
+
+
+Exercise 16.4
+a. A tutor knows that the length of time taken to complete a certain
+statistics question by first-year undergraduate students, X, is
+normally distributed with a mean of 17 minutes and a standard
+deviation of 4.5 minutes.
+i. What is the probability a randomly selected undergraduate
+takes more than 20 minutes to complete the question?
+ii. What’s the chance that a student takes between 5 and 10
+minutes to finish the question?
+iii. Find the time that marks off the slowest 10 percent of
+students.
+356 Chapter 16
+iv. Plot the normal distribution of interest between ±4σ and
+shade in the probability area of (iii), the slowest 10 percent
+of students.
+v. Generate a realization of times based on a class of 10 students completing the question.
+b. A meticulous gardener is interested in the length of blades
+of grass on his lawn. He believes that blade length X follows a
+normal distribution centered on 10 mm with a variance of 2 mm.
+i. Find the probability that a blade of grass is between 9.5 and
+11 mm long.
+ii. What are the standardized values of 9.5 and 11 in the context
+of this distribution? Using the standardized values, confirm
+that you can obtain the same probability you found in (i)
+with the standard normal density.
+iii. Below which value are the shortest 2.5 percent of blade
+lengths found?
+iv. Standardize your answer from (iii).
+16.2.3 Student’s t-distribution
+The Student’s t-distribution is a continuous probability distribution generally
+used when dealing with statistics estimated from a sample of data. It will
+become particularly relevant in the next two chapters, so I’ll briefly explain
+it here first.
+Any particular t-distribution looks a lot like the standard normal
+distribution—it’s bell-shaped, symmetric, and unimodal, and it’s centered on zero. The difference is that while a normal distribution is typically
+used to deal with a population, the t-distribution deals with sample from
+a population.
+For the t-distribution you don’t have to define any parameters per se,
+but you must choose the appropriate t-distribution by way of a strictly positive integer ν > 0; this is referred to as the degrees of freedom (df), called
+so because it represents the number of individual components in the calculation of a given statistic that are “free to change.” You’ll see in the upcoming chapters that this quantity is usually directly related to sample sizes.
+For the moment, though, you should just loosely think of the tdistribution as the representation of a family of curves and think of the
+degrees of freedom as the “selector” you use to tell you which particular
+version of the density to use. The precise equation for the density of the tdistribution is also not especially useful in an introductory setting, though
+it is useful to remember that the total probability underneath any t curve is
+naturally 1.
+For a t-distribution, the dt, pt, qt, and rt functions represent the R
+implementation of the density, the cumulative distribution (left probabilities), the quantile, and the random variate generation functions,
+Common Probability Distributions 357
+respectively. The first arguments, x, q, p, and n, respectively, provide the relevant value (or values) of interest to these functions; the second argument in
+all of these is df, to which you must specify the degrees of freedom ν.
+The best way to get an impression of the t family is through a visualization. Figure 16-10 plots the standard normal distribution, as well as the tdistribution curve with ν = 1, ν = 6, and ν = 20 df.
+Figure 16-10: Comparing the standard normal distribution with
+three instances of the t-distribution. Note that the higher the
+degrees of freedom, the closer the t-distribution approximation
+becomes to the normal.
+The one important note to take away from Figure 16-10, and indeed
+from this section, is the way in which the t density function changes with
+respect to the N(0,1) distribution as you increase the df. For small values
+of ν close to 1, the t-distribution is shorter, in terms of its mode, with more
+probability occurring in noticeably fatter tails. It turns out that the t density
+approaches the standard normal density as ν → ∞. As a case in point, note
+that the upper 5 percent tail of the standard normal distribution is delineated by the following value:
+R> qnorm(1-0.05)
+[1] 1.644854
+The same upper tail of the t-distribution is provided with df values of
+ν = 1, ν = 6, and ν = 20, respectively.
+R> qt(1-0.05,df=1)
+[1] 6.313752
+R> qt(1-0.05,df=6)
+[1] 1.94318
+358 Chapter 16
+R> qt(1-0.05,df=20)
+[1] 1.724718
+In direct comparison with the standard normal, the heavier weight in
+the tails of the t density leads naturally to more extreme quantile values
+given a specific probability. Notice that this extremity, however, is reduced
+as the df is increased—fitting in with the aforementioned fact that the tdistribution continues to improve in terms of its approximation to the standard normal as you raise the df.
+16.2.4 Exponential
+Of course, probability density functions don’t have to be symmetrical like
+those you’ve encountered so far, nor do they need to allow for the random
+variable to be able to take values from negative infinity to positive infinity
+(like the normal or t-distributions). A good example of this is the exponential
+distribution, for which realizations of a random variable X are valid only on a
+0 ≤ X < ∞ domain.
+For a continuous random variable 0 ≤ X < ∞, the exponential density
+function f is
+f (x) = λe exp{−λe x}; 0 ≤ x < ∞ (16.7)
+where λe is a parameter of the distribution and exp{ · } is the exponential
+function. The notation
+X ∼ EXP(λe)
+is often used to indicate that “X follows an exponential distribution with
+rate λe.”
+The following are the key points to note:
+• Theoretically, X can take any value in the range 0 to ∞, and f (x)
+decreases as x increases.
+• The “rate” parameter must be strictly positive; in other words, λe > 0.
+It defines f (0) and the rate of decay of the function to the horizontal
+asymptote at zero.
+The mean and variance are as follows, respectively:
+µX =
+1
+λe
+and σ
+2
+X
+=
+1
+λ
+2
+e
+The dexp Function
+The density function for the exponential distribution is a steadily decreasing
+line beginning at f (0) = λ; the rate of this decay ensures a total area of 1
+underneath the curve. You create Figure 16-11 with the relevant d-function
+in the following code.
+R> xvals <- seq(0,10,length=200)
+R> plot(xvals,dexp(x=xvals,rate=1.65),xlim=c(0,8),ylim=c(0,1.65),type="l",
+xlab="x",ylab="f(x)")
+Common Probability Distributions 359
+R> lines(xvals,dexp(x=xvals,rate=1),lty=2)
+R> lines(xvals,dexp(x=xvals,rate=0.4),lty=3)
+R> abline(v=0,col="gray")
+R> abline(h=0,col="gray")
+R> legend("topright",legend=c("EXP(1.65)","EXP(1)","EXP(0.4)"),lty=1:3)
+Figure 16-11: Three different exponential density functions.
+Decreasing λe lowers the mode and extends the tail.
+The parameter λe is provided to rate in dexp, which is evaluated at x,
+provided to the first argument x (via the xvals object in this example). You
+can see that a distinct feature of the exponential density function is that
+aforementioned decay to zero, with larger values of λe translating to a taller
+(yet sharper and more rapid) drop.
+This naturally decreasing behavior helps identify the role the exponential distribution often plays in applications—one of a “time-until-event”
+nature. In fact, there’s a special relationship between the exponential distribution and the Poisson distribution introduced in Section 16.1.3. When the
+Poisson distribution is used to model the count of a certain event through
+time, you use the exponential distribution to model the time between these
+events. In such a setting, the exponential parameter λe defines the mean rate
+at which the events occur over time.
+The pexp Function
+Let’s revisit the example from Exercise 16.2, where the average number of
+cars passing an individual within a 120-minute window was said to be 107.
+Define the random variable X to be the waiting time between two consecutive cars passing and, using an exponential distribution for X on a minute
+time scale, set λe = 107/120 ≈ 0.89 (rounded to 2 d.p.). If 107 cars are typically observed in a two-hour window, then you see cars at an average rate of
+0.89 per minute.
+Thus, you interpret λe as the “per-unit-time” measure of the λp parameter from the Poisson mass function. The interpretation of the mean as the
+360 Chapter 16
+reciprocal of the rate, µX = 1/λe, is also intuitive. For example, when observing cars at a rate of about 0.89 per minute, note that the average waiting
+time between cars is roughly 1/0.89 ≈ 1.12 minutes.
+So, in the current example, you want to examine the density
+X ∼ EXP 
+107
+120 
+.
+R> lambda.e <- 107/120
+R> lambda.e
+[1] 0.8916667
+Say a car has just passed the individual’s location and you want to find
+the probability that they must wait more than two and a half minutes before
+seeing another car, in other words, Pr(X > 2.5). You can do so using pexp.
+R> 1-pexp(q=2.5,rate=lambda.e)
+[1] 0.1076181
+This indicates that you have just over a 10 percent chance of observing
+at least a 2-minute 30-second gap before the next car appears. Remember
+that the default behavior of the p-function is to find the cumulative, lefthand probability from the provided value, so you need to subtract the result
+from 1 to find an upper-tail probability. You find the probability of waiting
+less than 25 seconds with the following, which gives a result of roughly 0.31:
+R> pexp(25/60,lambda.e)
+[1] 0.3103202
+Note the need to first convert the value of interest from seconds to minutes since you’ve defined f (x) via λe ≈ 0.89 on the scale of the latter.
+The qexp Function
+Use the appropriate quantile function qexp to find, say, the cutoff point for
+the shortest 15 percent of waits.
+R> qexp(p=0.15,lambda.e)
+[1] 0.1822642
+This indicates that the value of interest is about 0.182 minutes, in other
+words, roughly 0.182 × 60 = 10.9 seconds.
+As usual, you can use rexp to generate random variates of any specific
+exponential distribution.
+NOTE It is important to distinguish between the “exponential distribution,” the “exponential family of distributions,” and the “exponential function.” The first refers to the
+density function that’s just been studied, whereas the second refers to a general class
+of probability distributions, including the Poisson, the normal, and the exponential
+itself. The third is just the standard mathematical exponential function upon which
+the exponential family members depend and is directly accessible in R via exp.
+Common Probability Distributions 361
+Exercise 16.5
+a. Situated in the central north island of New Zealand, the Pohutu
+geyser is said to be the largest active geyser in the southern
+hemisphere. Suppose that it erupts an average of 3,500 times
+every year.
+i. With the intention of modeling a random variable X as the
+time between consecutive eruptions, evaluate the parameter
+value λe with respect to a time scale in days (assume 365.25
+days per year to account for leap years).
+ii. Plot the density function of interest. What’s the mean wait in
+days between eruptions?
+iii. What’s the probability of waiting less than 30 minutes for the
+next eruption?
+iv. What waiting time defines the longest 10 percent of waits?
+Convert your answer to hours.
+b. You can also use the exponential distribution to model certain
+product survival times, or “time-to-failure” type of variables. Say
+a manufacturer of a particular air conditioning unit knows that
+the product has an average life of 11 years before it needs any
+type of repair callout. Let the random variable X represent the
+time until the necessary repair of one of these units and assume
+X follows an exponential distribution with λe = 1/11.
+i. The company offers a five-year full repair warranty on this
+unit. What’s the probability that a randomly selected air
+conditioner owner makes use of the warranty?
+ii. A rival company offers a six-year guarantee on its competing
+air conditioning unit but knows that its units last, on average,
+only nine years before requiring some kind of repair. What
+are the chances of making use of that warranty?
+iii. Determine the probabilities that the units in (i) and the
+units in (ii) last more than 15 years.
+16.2.5 Other Density Functions
+There are a number of other common probability density functions used
+for a wide variety of tasks involving continuous random variables. I’ll summarize a few here:
+• The chi-squared distribution models sums of squared normal variates and
+is thus often related to operations concerning sample variances of normally distributed data. Its functions are dchisq, pchisq, qchisq, and rchisq,
+and like the t-distribution (Section 16.2.3), it’s dependent upon specification of a degrees of freedom provided as the argument df.
+362 Chapter 16
+• The F-distribution is used to model ratios of two chi-squared random
+variables and is useful in, for example, regression problems (see Chapter 20). Its functions are df, pf, qf, and rf, and as it involves two chisquared values, it’s dependent upon the specification of a pair of
+degrees of freedom values supplied as the arguments df1 and df2.
+• The gamma distribution is a generalization of both the exponential and
+chi-squared distributions. Its functions are dgamma, pgamma, qgamma, and
+rgamma, and it’s dependent upon “shape” and “scale” parameters provided as the arguments shape and scale, respectively.
+• The beta distribution is often used in Bayesian modeling, and it has
+implemented functions dbeta, pbeta, qbeta, and rbeta. It’s defined by two
+“shape” parameters α and β, supplied as shape1 and shape2, respectively.
+In particular, you’ll encounter the chi-squared and F -distributions over
+the next couple of chapters.
+NOTE In all of the common probability distributions you’ve examined over the past couple
+of sections, I’ve emphasized the need to perform “one-minus” operations to find probabilities or quantiles with respect to an upper- or right-tailed area. This is because
+of the cumulative nature of the p- and q-functions—by definition, it’s the lower tail
+that is dealt with. However, most p- and q-functions in R include an optional logical argument, lower.tail, which defaults to FALSE. Therefore, an alternative is to set
+lower.tail=TRUE in any relevant function call, in which case R will expect or return
+upper-tail areas specifically.
